@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-*Description*:
+**Description:**
 
 
-*Assumptions:*
+**Assumptions:**
 
 
-*Acceptance Criteria:*
+**Acceptance Criteria:**
