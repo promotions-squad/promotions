@@ -32,7 +32,7 @@ from flask_api import status    # HTTP Status Codes
 from werkzeug.exceptions import NotFound
 
 from flask_sqlalchemy import SQLAlchemy
-from models import Pet, DataValidationError
+from models import Promotion, DataValidationError
 
 # Import Flask application
 from . import app
@@ -64,3 +64,19 @@ def create_promotions():
                          {
                              'Location': location_url
                          })
+
+######################################################################
+# RETRIEVE A PROMOTION BASED ON PRODUCT ID
+######################################################################
+@app.route('/promotions/product/<int:product_id>', methods=['GET'])
+def get_promotions(product_id):
+    """
+    Retrieve promotions that apply to a product
+
+    This endpoint will return a promotion based on the product id associated with the promotion
+    """
+    app.logger.info('Request for promotion with product_id: %s', product_id)
+    promotion = Promotion.find_by_product(product_id)
+    if not promotion:
+        raise NotFound("Promotion for product with id '{}' was not found.".format(product_id))
+    return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
