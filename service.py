@@ -45,3 +45,24 @@ def index():
                    version='1.0',
                    paths=url_for('list_promotions', _external=True)
                   ), status.HTTP_200_OK
+
+######################################################################
+# LIST ALL PROMOTIONS
+######################################################################
+
+@app.route('/promotions', methods=['GET'])
+def list_promotions():
+    """ Returns all of the Promotions """
+    app.logger.info('Request for promotion list')
+    promotions = []
+    category = request.args.get('category')
+    name = request.args.get('name')
+    if category:
+        promotions = Promotion.find_by_category(category)
+    elif name:
+        promotions = Promotion.find_by_name(name)
+    else:
+        promotions = Promotion.all()
+
+    results = [promotion.serialize() for promotion in promotions]
+    return make_response(jsonify(results), status.HTTP_200_OK)
