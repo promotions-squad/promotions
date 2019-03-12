@@ -66,3 +66,24 @@ def list_promotions():
 
     results = [promotion.serialize() for promotion in promotions]
     return make_response(jsonify(results), status.HTTP_200_OK)
+
+
+#Add a new Promotion
+@app.route('/promotions', methods=['POST'])
+def create_promotions():
+    """
+    Creates a Promotion
+    This endpoint will create a promotion based the data in the body that is posted
+    """
+    app.logger.info('Request to create a promotion')
+    check_content_type('application/json')
+    promotion = Promotion()
+    promotion.deserialize(request.get_json())
+    promotion.save()
+    message = promotion.serialize()
+    location_url = url_for('get_promotions', promotion_id=promotions.id, _external=True)
+    return make_response(jsonify(message), status.HTTP_201_CREATED,
+                         {
+                             'Location': location_url
+                         })
+
