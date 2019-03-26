@@ -18,7 +18,7 @@ DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 ######################################################################
 class TestPromotions(unittest.TestCase):
     """ Test Cases for Promotions """
-    
+
     @classmethod
     def setUpClass(cls):
         """ These run once per Test suite """
@@ -39,6 +39,20 @@ class TestPromotions(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    def test_update_a_promotion(self):
+        """ Update a Promotion """
+        promotion = Promotion(product_id="1234", category="dollar", available=True, discount="5", start_date=factory.LazyFunction(datetime.date.today),factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
+        promotion.save()
+        self.assertEqual(promotion.id, 1)
+        # Change it an save it
+        promotion.category = "percentage"
+        promotion.save()
+        self.assertEqual(promotion.id, 1)
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        promotions = Promotion.all()
+        self.assertEqual(len(promotions), 1)
+        self.assertEqual(promotions[0].category, "percentage")
 
 ######################################################################
 #   M A I N
