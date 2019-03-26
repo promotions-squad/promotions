@@ -46,6 +46,58 @@ class TestPromotionServer(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    def _create_promotions(self, count):
+        """ Factory method to create promotions in bulk """
+        promotions = []
+        for _ in range(count):
+            test_promotion = PromotionFactory()
+            resp = self.app.post('/promotions',
+                                 json=test_promotion.serialize(),
+                                 content_type='application/json')
+            self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create test promotion')
+            new_promotion = resp.get_json()
+            test_promotion.id = new_promotion['id']
+            promotions.append(test_promotion)
+        return promotions
+
+    def test_index(self):
+        """ Test the Home Page """
+        resp = self.app.get('/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data['name'], 'Promotion Demo REST API Service')
+
+    def test_create_promotion(self):
+        """ Create a new Promotion """
+        test_promotion = PromotionFactory()
+        resp = self.app.post('/promotions',
+                             json=test_promotion.serialize(),
+                             content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get('Location', None)
+        self.assertTrue(location != None)
+        # Check the data is correct
+        new_promotion = resp.get_json()
+        self.assertEqual(new_promotion['product_id'], test_promotion.product_id, "Product ID does not match")
+        self.assertEqual(new_promotion['category'], test_promotion.category, "Categories do not match")
+        self.assertEqual(new_promotion['available'], test_promotion.available, "Availability does not match")
+        self.assertEqual(new_promotion['discount'], test_promotion.discount, "Discount does not match")
+        self.assertEqual(new_promotion['start_date'], test_promotion.start_date, "Start Date does not match")
+        self.assertEqual(new_promotion['end_date'], test_promotion.end_date, "End Date does not match")
+
+        # Check that the location header was correct
+        resp = self.app.get(location,
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_promotion = resp.get_json()
+        self.assertEqual(new_promotion['product_id'], test_promotion.product_id, "Product ID does not match")
+        self.assertEqual(new_promotion['category'], test_promotion.category, "Categories do not match")
+        self.assertEqual(new_promotion['available'], test_promotion.available, "Availability does not match")
+        self.assertEqual(new_promotion['discount'], test_promotion.discount, "Discount does not match")
+        self.assertEqual(new_promotion['start_date'], test_promotion.start_date, "Start Date does not match")
+        self.assertEqual(new_promotion['end_date'], test_promotion.end_date, "End Date does not match")
+
     def test_update_promotion(self):
         """ Update an existing Promotion """
         # create a promotion to update
@@ -63,7 +115,7 @@ class TestPromotionServer(unittest.TestCase):
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_promotion = resp.get_json()
-        self.assertEqual(updated_promotion['category'], 'unknown')    
+        self.assertEqual(updated_promotion['category'], 'unknown')
 
 
 ######################################################################
