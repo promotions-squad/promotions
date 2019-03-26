@@ -39,6 +39,31 @@ class TestPromotions(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    def test_create_a_pet(self):
+        """ Create a promotion and assert that it exists """
+        promotion = Promotion(product_id="1234", category="dollar", available=True, discount="5", start_date=factory.LazyFunction(datetime.date.today),factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
+        self.assertTrue(promotion != None)
+        self.assertEqual(promotion.id, None)
+        self.assertEqual(promotion.product_id, "1234")
+        self.assertEqual(promotion.category, "dollar")
+        self.assertEqual(promotion.available, True)
+        self.assertEqual(promotion.discount, "5")
+        self.assertEqual(promotion.start_date, factory.LazyFunction(datetime.date.today))
+        self.assertEqual(promotion.end_date, factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
+
+    def test_add_a_promotion(self):
+        """ Create a promotion and add it to the database """
+        promotions = Promotion.all()
+        self.assertEqual(promotions, [])
+        promotion = Promotion(product_id="1234", category="dollar", available=True, discount="5", start_date=factory.LazyFunction(datetime.date.today),factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
+        self.assertTrue(promotion != None)
+        self.assertEqual(promotion.id, None)
+        promotion.save()
+        # Asert that it was assigned an id and shows up in the database
+        self.assertEqual(promotion.id, 1)
+        promotions = Promotion.all()
+        self.assertEqual(len(promotions), 1)
+
     def test_update_a_promotion(self):
         """ Update a Promotion """
         promotion = Promotion(product_id="1234", category="dollar", available=True, discount="5", start_date=factory.LazyFunction(datetime.date.today),factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
