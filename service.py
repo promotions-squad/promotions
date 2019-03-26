@@ -102,3 +102,14 @@ def get_promotions(product_id):
     if not promotion:
         raise NotFound("Promotion for product with id '{}' was not found.".format(product_id))
     return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# DELETE A PROMOTION
+######################################################################
+@app.route('/promotions/<int:promotion_id>', methods=['DELETE'])
+def delete_promotions(promotion_id):
+    app.logger.info('Request to delete Promotion with id: {}'.format(promotion_id))
+    promotion = Promotion.find(promotion_id)
+    if promotion:
+        promotion.delete()
+    return make_response('', status.HTTP_204_NO_CONTENT)
