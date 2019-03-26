@@ -39,7 +39,7 @@ class TestPromotions(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_create_a_pet(self):
+    def test_create_a_promotion(self):
         """ Create a promotion and assert that it exists """
         promotion = Promotion(product_id="1234", category="dollar", available=True, discount="5", start_date=factory.LazyFunction(datetime.date.today),factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
         self.assertTrue(promotion != None)
