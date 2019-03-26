@@ -79,6 +79,13 @@ class TestPromotions(unittest.TestCase):
         self.assertEqual(len(promotions), 1)
         self.assertEqual(promotions[0].category, "percentage")
 
+
+    def test_delete_promotion(self):
+        """ Delete a Promotion that exists """
+        resp = self.app.delete('/promotions/2', content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+
 ######################################################################
 #   M A I N
 ######################################################################
