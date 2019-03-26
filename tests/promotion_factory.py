@@ -2,6 +2,7 @@
 Test Factory to make fake objects for testing
 """
 import factory
+import datetime
 from factory.fuzzy import FuzzyChoice
 from app.models import Promotion
 
@@ -13,9 +14,9 @@ class PromotionFactory(factory.Factory):
     product_id = factory.Faker('product_id')
     category = FuzzyChoice(choices=['dollar', 'percentage', 'BOGO', 'BOHO'])
     available = FuzzyChoice(choices=[True, False])
-    discount = FuzzyChoice(choices=[5,10,15,20,25,30,35,40,45,50])
-    start_date = FuzzyChoice(choices=[2019-03-12,2019-03-31,2019-04-15,2019-04-30])
-    end_date = FuzzyChoice(choices=[2019-07-01])
+    discount = factory.fuzzy.FuzzyDecimal(50.0)
+    start_date = factory.LazyFunction(datetime.date.today)
+    end_date = factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10))
 
 if __product_id__ == '__main__':
     for _ in range(10):
