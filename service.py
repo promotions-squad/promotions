@@ -37,6 +37,48 @@ from models import Promotion, DataValidationError
 # Import Flask application
 from . import app
 
+######################################################################
+# Custom Exceptions
+######################################################################
+class DataValidationError(ValueError):
+    pass
+
+######################################################################
+# ERROR Handling
+######################################################################
+@app.errorhandler(DataValidationError)
+def request_validation_error(error):
+    message = str(error)
+    app.logger.info(message)
+    return jsonify(status=400, error='Bad Request', message=message), \
+                   status.HTTP_400_BAD_REQUEST
+
+@app.errorhandler(404)
+def not_found(error):
+    message = str(error)
+    app.logger.info(message)
+    return jsonify(status=404, error='Not Found', message=message), \
+                   status.HTTP_404_NOT_FOUND
+
+@app.errorhandler(400)
+def bad_request(error):
+    message = str(error)
+    app.logger.info(message)
+    return jsonify(status=400, error='Bad Request', message=message), \
+                   status.HTTP_400_BAD_REQUEST
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return jsonify(status=405, error='Method not Allowed',
+                   message='Your request method is not supported. Check your HTTP method and try again.'), \
+                   status.HTTP_405_METHOD_NOT_ALLOWED
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify(status=500, error='Internal Server Error',
+                   message='Houston... we have a problem.'), \
+                   status.HTTP_500_INTERNAL_SERVER_ERROR
+
 #Get Index
 @app.route('/')
 def index():
