@@ -50,9 +50,9 @@ class Promotion(db.Model):
     product_id = db.Column(db.String(63))
     category = db.Column(db.String(63))
     available = db.Column(db.Boolean())
-	discount = db.Column(db.Float())
-	start_date = db.Column(db.datetime())
-	end_date = db.Column(db.datetime())
+    discount = db.Column(db.Float())
+    start_date = db.Column(db.datetime())
+    end_date = db.Column(db.datetime())
 
     def __repr__(self):
         return '<Promotion %r>' % (self.proudct_id)
@@ -76,9 +76,9 @@ class Promotion(db.Model):
                 "product_id": self.product_id,
                 "category": self.category,
                 "available": self.available,
-				"discount": self.discount,
-				"start_date": self.start_date,
-				"end_date": self.end_date}
+		"discount": self.discount,
+		"start_date": self.start_date,
+		"end_date": self.end_date}
 
     def deserialize(self, data):
         """
@@ -90,9 +90,9 @@ class Promotion(db.Model):
             self.product_id = data['product_id']
             self.category = data['category']
             self.available = data['available']
-			self.discount = data['discount']
-			self.start_date = data['start_date']
-			self.end_date = data['end_date']
+	    self.discount = data['discount']
+	    self.start_date = data['start_date']
+	    self.end_date = data['end_date']
         except KeyError as error:
             raise DataValidationError('Invalid Promotion: missing ' + error.args[0])
         except TypeError as error:
