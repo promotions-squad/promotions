@@ -6,6 +6,7 @@ Test cases can be run with the following:
   codecov --token=$CODECOV_TOKEN
 """
 
+import mock
 import unittest
 import os
 import logging
@@ -188,13 +189,19 @@ class TestPromotionServer(unittest.TestCase):
         resp = self.app.post('/promotions/1')
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    #@patch('app.service.Promotion.all')
-    def test_unexpected_error(self, bad_request_mock):
-        """ Test an unexpected error from Find All """
-        bad_request_mock.side_effect = KeyError
-        resp = self.app.get('/promotions')
-        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+    @mock.patch('app.service.Promotion.find_by_name')
+    def test_bad_request(self, bad_request_mock):
+         """ Test a Bad Request error from Find By Product Id """
+         bad_request_mock.side_effect = DataValidationError()
+         resp = self.app.get('/promotions', query_string='productid=1234')
+         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
+    @mock.patch('app.service.Promotion.find_by_name')
+    def test_search_bad_data(self, inventory_find_mock):
+        """ Test a search that returns bad data """
+        promotion_find_mock.return_value = None
+        resp = self.app.get('/promotions', query_string='productid=1234')
+        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 ######################################################################
