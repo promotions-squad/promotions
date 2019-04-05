@@ -19,12 +19,12 @@ Models
 Promotion - A Promotion used in the Store
 Attributes:
 -----------
-product_id (string) - the product_id the promotion applies to
+productid (string) - the productid the promotion applies to
 category (string) - the category the promotion belongs to (i.e., percentage, dollar amount off)
-available (boolean) - True for promotions that are enabled for a product_id
+available (boolean) - True for promotions that are enabled for a productid
 discount (float) - the amount of the promotional discount (for percentage will be a decimal, for dollar will be a number)
-start_date (datetime) - starting date of promotion
-end_date (datetime) - ending date of promotion
+startdate (datetime) - starting date of promotion
+enddate (datetime) - ending date of promotion
 """
 import logging
 from flask_sqlalchemy import SQLAlchemy
@@ -48,12 +48,12 @@ class Promotion(db.Model):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.String(63))
+    productid = db.Column(db.String(63))
     category = db.Column(db.String(63))
     available = db.Column(db.Boolean())
     discount = db.Column(db.Float())
-    start_date = db.Column(db.Date())
-    end_date = db.Column(db.Date())
+    startdate = db.Column(db.Date())
+    enddate = db.Column(db.Date())
 
     def __repr__(self):
         return '<Promotion %r>' % (self.proudct_id)
@@ -74,12 +74,12 @@ class Promotion(db.Model):
     def serialize(self):
         """ Serializes a Promotion into a dictionary """
         return {"id": self.id,
-                "product_id": self.product_id,
+                "productid": self.productid,
                 "category": self.category,
                 "available": self.available,
 		"discount": self.discount,
-		"start_date": self.start_date,
-		"end_date": self.end_date}
+		"startdate": self.startdate,
+		"enddate": self.enddate}
 
     def deserialize(self, data):
         """
@@ -88,12 +88,12 @@ class Promotion(db.Model):
             data (dict): A dictionary containing the Promotion data
         """
         try:
-            self.product_id = data['product_id']
+            self.productid = data['productid']
             self.category = data['category']
             self.available = data['available']
-	    self.discount = float(data['discount'])
-	    self.start_date = datetime.strptime(data['start_date'],'%Y-%m-%d')
-	    self.end_date = datetime.strptime(data['end_date'],'%Y-%m-%d')
+	    self.discount = data['discount']
+	    self.startdate = data['startdate']
+	    self.enddate = data['enddate']
         except KeyError as error:
             raise DataValidationError('Invalid Promotion: missing ' + error.args[0])
         except TypeError as error:
@@ -117,11 +117,11 @@ class Promotion(db.Model):
         cls.logger.info('Processing all Promotions')
         return cls.query.all()
 
-    @classmethod
-    def find(cls, id):
-        """ Finds a Promotion by it's ID """
-        cls.logger.info('Processing lookup for id %s ...', id)
-        return cls.query.get(id)
+#    @classmethod
+#    def find(cls, id):
+#        """ Finds a Promotion by it's ID """
+#        cls.logger.info('Processing lookup for id %s ...', id)
+#        return cls.query.get(id)
 
     @classmethod
     def find_or_404(cls, id):
@@ -136,7 +136,7 @@ class Promotion(db.Model):
             available (string): product_id
         """
         cls.logger.info('Processing product_id query for %s ...', product_id)
-        return cls.query.filter(cls.product_id == product_id)
+        return cls.query.filter(cls.productid == product_id)
 
     @classmethod
     def find_by_category(cls, category):
