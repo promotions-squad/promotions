@@ -53,8 +53,8 @@ class TestPromotionServer(unittest.TestCase):
         for _ in range(count):
             test_promotion = PromotionFactory()
             resp = self.app.post('/promotions',
-                                 json=json.dumps(test_promotion.serialize(),default=str),
-                                 content_type='application/json')
+                                json=test_promotion.serialize(),
+                                content_type='application/json')
             self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create test promotion')
             new_promotion = resp.get_json()
             test_promotion.id = new_promotion['id']
@@ -96,8 +96,8 @@ class TestPromotionServer(unittest.TestCase):
         """ Create a new Promotion """
         test_promotion = PromotionFactory()
         resp = self.app.post('/promotions',
-                             json=json.dumps(test_promotion.serialize(),default=str),
-                             content_type='application/json')
+                            json=test_promotion.serialize(),
+                            content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         # Make sure location header is set
         location = resp.headers.get('Location', None)
@@ -128,8 +128,8 @@ class TestPromotionServer(unittest.TestCase):
         # create a promotion to update
         test_promotion = PromotionFactory()
         resp = self.app.post('/promotions',
-                             json=json.dumps(test_promotion.serialize(),default=str),
-                             content_type='application/json')
+                            json=json=test_promotion.serialize(),
+                            content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
         # update the promotion
