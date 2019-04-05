@@ -5,6 +5,7 @@ import factory
 #import datetime
 #import factory.fuzzy as ff
 from factory.fuzzy import FuzzyChoice
+from factory.fuzzy import FuzzyFloat
 from app.models import Promotion
 
 class PromotionFactory(factory.Factory):
