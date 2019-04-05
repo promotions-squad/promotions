@@ -44,17 +44,17 @@ class TestPromotions(unittest.TestCase):
         promotion = Promotion(productid="1234",
                               category="dollar",
                               available=True,
-                              discount=5.0,
-                              startdate=datetime.date.today(),
-                              enddate=datetime.date.today()+datetime.timedelta(days=10))
+                              discount=5.0)
+#                              startdate=datetime.date.today(),
+#                              enddate=datetime.date.today()+datetime.timedelta(days=10))
         self.assertTrue(promotion != None)
         self.assertEqual(promotion.id, None)
         self.assertEqual(promotion.productid, "1234")
         self.assertEqual(promotion.category, "dollar")
         self.assertEqual(promotion.available, True)
         self.assertEqual(promotion.discount, 5.0)
-        self.assertEqual(promotion.startdate, datetime.date.today())
-        self.assertEqual(promotion.enddate, datetime.date.today()+datetime.timedelta(days=10))
+#        self.assertEqual(promotion.startdate, datetime.date.today())
+#        self.assertEqual(promotion.enddate, datetime.date.today()+datetime.timedelta(days=10))
 
     def test_add_a_promotion(self):
         """ Create a promotion and add it to the database """
@@ -63,9 +63,9 @@ class TestPromotions(unittest.TestCase):
         promotion = Promotion(productid="1234",
                               category="dollar",
                               available=True,
-                              discount=5.0,
-                              startdate=datetime.date.today(),
-                              enddate=datetime.date.today()+datetime.timedelta(days=10))
+                              discount=5.0)
+#                              startdate=datetime.date.today(),
+#                              enddate=datetime.date.today()+datetime.timedelta(days=10))
         self.assertTrue(promotion != None)
         self.assertEqual(promotion.id, None)
         promotion.save()
@@ -79,9 +79,9 @@ class TestPromotions(unittest.TestCase):
         promotion = Promotion(productid="1234",
                               category="dollar",
                               available=True,
-                              discount=5.0,
-                              startdate=datetime.date.today(),
-                              enddate=datetime.date.today()+datetime.timedelta(days=10))
+                              discount=5.0)
+#                              startdate=datetime.date.today(),
+#                              enddate=datetime.date.today()+datetime.timedelta(days=10))
         promotion.save()
         self.assertEqual(promotion.id, 1)
         # Change it an save it
@@ -100,9 +100,9 @@ class TestPromotions(unittest.TestCase):
         promotion = Promotion(productid="1234",
                               category="dollar",
                               available=True,
-                              discount=5.0,
-                              startdate=datetime.date.today(),
-                              enddate=datetime.date.today()+datetime.timedelta(days=10))
+                              discount=5.0)
+#                              startdate=datetime.date.today(),
+#                              enddate=datetime.date.today()+datetime.timedelta(days=10))
         promotion.save()
         self.assertEqual(len(Promotion.all()), 1)
         # delete the promotion and make sure it isn't in the database
@@ -114,9 +114,9 @@ class TestPromotions(unittest.TestCase):
         promotion = Promotion(productid="1234",
                               category="dollar",
                               available=True,
-                              discount=5.0,
-                              startdate=datetime.date.today(),
-                              enddate=datetime.date.today()+datetime.timedelta(days=10))
+                              discount=5.0)
+#                              startdate=datetime.date.today(),
+#                              enddate=datetime.date.today()+datetime.timedelta(days=10))
         data = promotion.serialize()
         self.assertNotEqual(data, None)
         self.assertIn('id', data)
@@ -129,12 +129,12 @@ class TestPromotions(unittest.TestCase):
         self.assertEqual(data['available'], True)
         self.assertIn('discount', data)
         self.assertEqual(data['discount'], 5.0)
-        self.assertIn('startdate', data)
-        self.assertEqual(data['startdate'], datetime.date.today())
-        self.assertIn('enddate', data)
-        self.assertEqual(data['enddate'], datetime.date.today()+datetime.timedelta(days=10))
-        
-        
+#        self.assertIn('startdate', data)
+#        self.assertEqual(data['startdate'], datetime.date.today())
+#        self.assertIn('enddate', data)
+#        self.assertEqual(data['enddate'], datetime.date.today()+datetime.timedelta(days=10))
+
+
 
     def test_deserialize_a_promotion(self):
         """ Test deserialization of a Promotion """
@@ -142,10 +142,10 @@ class TestPromotions(unittest.TestCase):
                 "productid": "4321",
                 "category": "percentage",
                 "available": True,
-                "discount":5.0,
-                "startdate": datetime.date.today(),
-                "enddate": datetime.date.today()+datetime.timedelta(days=10)
-        }
+                "discount":5.0}
+#                "startdate": datetime.date.today(),
+#                "enddate": datetime.date.today()+datetime.timedelta(days=10)
+#        }
         promotion = Promotion()
         promotion.deserialize(data)
         self.assertNotEqual(promotion, None)
@@ -154,8 +154,8 @@ class TestPromotions(unittest.TestCase):
         self.assertEqual(promotion.category, "percentage")
         self.assertEqual(promotion.available, True)
         self.assertEqual(promotion.discount, 5.0)
-        self.assertEqual(promotion.startdate, datetime.date.today())
-        self.assertEqual(promotion.enddate, datetime.date.today()+datetime.timedelta(days=10))
+#        self.assertEqual(promotion.startdate, datetime.date.today())
+#        self.assertEqual(promotion.enddate, datetime.date.today()+datetime.timedelta(days=10))
 
 
     def test_deserialize_bad_data(self):
@@ -169,16 +169,15 @@ class TestPromotions(unittest.TestCase):
         Promotion(productid="1234",
                   category="dollar",
                   available=True,
-                  discount=5.0,
-                  startdate=datetime.date.today(),
-                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
+                  discount=5.0)
+#                  startdate=datetime.date.today(),
+#                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         promo = Promotion(productid="4321",
                           category="percentage",
                           available=False,
-                          discount = 20.0,
-                          startdate = datetime.date.today(),
-                          enddate = datetime.date.today()+datetime.timedelta(days=10)
-        )
+                          discount = 20.0)
+#                          startdate = datetime.date.today(),
+#                          enddate = datetime.date.today()+datetime.timedelta(days=10)
         promo.save()
         promotion = Promotion.find_or_404(promo.id)
         self.assertIsNot(promotion, None)
@@ -187,8 +186,8 @@ class TestPromotions(unittest.TestCase):
         self.assertEqual(promotion.category, "percentage")
         self.assertEqual(promotion.available, False)
         self.assertEqual(promotion.discount, 20.0)
-        self.assertEqual(promotion.startdate, datetime.date.today())
-        self.assertEqual(promotion.enddate, datetime.date.today()+datetime.timedelta(days=10))
+#        self.assertEqual(promotion.startdate, datetime.date.today())
+#        self.assertEqual(promotion.enddate, datetime.date.today()+datetime.timedelta(days=10))
 
 
     def test_find_by_category(self):
@@ -196,66 +195,66 @@ class TestPromotions(unittest.TestCase):
         Promotion(productid="1234",
                   category="dollar",
                   available=True,
-                  discount=5.0,
-                  startdate=datetime.date.today(),
-                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
+                  discount=5.0)
+#                  startdate=datetime.date.today(),
+#                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         Promotion(productid="4321",
                   category="percentage",
                   available=False,
                   discount=20.0,
-                  startdate=datetime.date.today(),
-                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
+#                  startdate=datetime.date.today(),
+#                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         promotions = Promotion.find_by_category("percentage")
         self.assertEqual(promotions[0].category, "percentage")
         self.assertEqual(promotions[0].productid, "4321")
         self.assertEqual(promotions[0].available, False)
         self.assertEqual(promotions[0].discount, 20.0)
-        self.assertEqual(promotions[0].startdate, datetime.date.today())
-        self.assertEqual(promotions[0].enddate, datetime.date.today()+datetime.timedelta(days=10))
+#        self.assertEqual(promotions[0].startdate, datetime.date.today())
+#        self.assertEqual(promotions[0].enddate, datetime.date.today()+datetime.timedelta(days=10))
 
     def test_find_by_product(self):
         """ Find a Promotion by productid """
         Promotion(productid="1234",
                   category="dollar",
                   available=True,
-                  discount=5.0,
-                  startdate=datetime.date.today(),
-                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
+                  discount=5.0)
+#                  startdate=datetime.date.today(),
+#                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         Promotion(productid="4321",
                   category="percentage",
                   available=False,
-                  discount=20.0,
-                  startdate=datetime.date.today(),
-                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
+                  discount=20.0)
+#                  startdate=datetime.date.today(),
+#                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         promotions = Promotion.find_by_product("4321")
         self.assertEqual(promotions[0].category, "percentage")
         self.assertEqual(promotions[0].productid, "4321")
         self.assertEqual(promotions[0].available, False)
         self.assertEqual(promotions[0].discount, 20.0)
-        self.assertEqual(promotions[0].startdate, datetime.date.today())
-        self.assertEqual(promotions[0].enddate, datetime.date.today()+datetime.timedelta(days=10))
+#        self.assertEqual(promotions[0].startdate, datetime.date.today())
+#        self.assertEqual(promotions[0].enddate, datetime.date.today()+datetime.timedelta(days=10))
 
     def test_find_by_availability(self):
         """ Find a Promotion by availability """
         Promotion(productid="1234",
                   category="dollar",
                   available=True,
-                  discount=5.0,
-                  startdate=datetime.date.today(),
-                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
+                  discount=5.0)
+#                  startdate=datetime.date.today(),
+#                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         Promotion(productid="4321",
                   category="percentage",
                   available=False,
-                  discount=20.0,
-                  startdate=datetime.date.today(),
-                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
+                  discount=20.0)
+#                  startdate=datetime.date.today(),
+#                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         promotions = Promotion.find_by_availability(False)
         self.assertEqual(promotions[0].category, "percentage")
         self.assertEqual(promotions[0].productid, "4321")
         self.assertEqual(promotions[0].available, False)
         self.assertEqual(promotions[0].discount, 20.0)
-        self.assertEqual(promotions[0].startdate, datetime.date.today())
-        self.assertEqual(promotions[0].enddate, datetime.date.today()+datetime.timedelta(days=10))
+#        self.assertEqual(promotions[0].startdate, datetime.date.today())
+#        self.assertEqual(promotions[0].enddate, datetime.date.today()+datetime.timedelta(days=10))
 
 
 ######################################################################
