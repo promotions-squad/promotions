@@ -127,8 +127,8 @@ class TestPromotionServer(unittest.TestCase):
         """ Update an existing Promotion """
         # create a promotion to update
         test_promotion = PromotionFactory()
-                             json=json.dumps(test_promotion.serialize(),default=str),
-                             content_type='application/json')
+                         json=json.dumps(test_promotion.serialize(),default=str),
+                         content_type='application/json')
 
         new_promotion = resp.get_json()
         resp = self.app.put('/promotions/{}'.format(new_promotion['id']),
