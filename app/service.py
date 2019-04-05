@@ -83,7 +83,7 @@ def internal_error(error):
 @app.route('/')
 def index():
     """ Root URL response """
-    return jsonify(name='promotions Demo REST API Service',
+    return jsonify(name='Promotions Demo REST API Service',
                    version='1.0',
                    paths=url_for('list_promotions', _external=True)
                   ), status.HTTP_200_OK
@@ -175,3 +175,39 @@ def update_promotions(promotion_id):
     promotion.id = promotion_id
     promotion.save()
     return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
+
+######################################################################
+#  U T I L I T Y   F U N C T I O N S
+######################################################################
+
+def init_db():
+    """ Initialies the SQLAlchemy app """
+    global app
+    Promotion.init_db(app)
+
+def check_content_type(content_type):
+    """ Checks that the media type is correct """
+    if request.headers['Content-Type'] == content_type:
+        return
+    app.logger.error('Invalid Content-Type: %s', request.headers['Content-Type'])
+    abort(415, 'Content-Type must be {}'.format(content_type))
+
+def initialize_logging(log_level=logging.INFO):
+    """ Initialized the default logging to STDOUT """
+    if not app.debug:
+        print 'Setting up logging...'
+        # Set up default logging for submodules to use STDOUT
+        # datefmt='%m/%d/%Y %I:%M:%S %p'
+        fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+        logging.basicConfig(stream=sys.stdout, level=log_level, format=fmt)
+        # Make a new log handler that uses STDOUT
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(logging.Formatter(fmt))
+        handler.setLevel(log_level)
+        # Remove the Flask default handlers and use our own
+        handler_list = list(app.logger.handlers)
+        for log_handler in handler_list:
+            app.logger.removeHandler(log_handler)
+        app.logger.addHandler(handler)
+        app.logger.setLevel(log_level)
+        app.logger.info('Logging handler established')

@@ -28,6 +28,7 @@ end_date (datetime) - ending date of promotion
 """
 import logging
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
@@ -51,8 +52,8 @@ class Promotion(db.Model):
     category = db.Column(db.String(63))
     available = db.Column(db.Boolean())
     discount = db.Column(db.Float())
-    start_date = db.Column(db.datetime())
-    end_date = db.Column(db.datetime())
+    start_date = db.Column(db.Date())
+    end_date = db.Column(db.Date())
 
     def __repr__(self):
         return '<Promotion %r>' % (self.proudct_id)
@@ -90,9 +91,9 @@ class Promotion(db.Model):
             self.product_id = data['product_id']
             self.category = data['category']
             self.available = data['available']
-	    self.discount = data['discount']
-	    self.start_date = data['start_date']
-	    self.end_date = data['end_date']
+	    self.discount = float(data['discount'])
+	    self.start_date = datetime.strptime(data['start_date'],'%Y-%m-%d')
+	    self.end_date = datetime.strptime(data['end_date'],'%Y-%m-%d')
         except KeyError as error:
             raise DataValidationError('Invalid Promotion: missing ' + error.args[0])
         except TypeError as error:
