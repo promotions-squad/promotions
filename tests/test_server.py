@@ -13,6 +13,7 @@ from flask_api import status    # HTTP Status Codes
 #from mock import MagicMock, patch
 from app.models import Promotion, DataValidationError, db
 from .promotion_factory import PromotionFactory
+from unittest.mock import patch
 import app.service as service
 import json
 
