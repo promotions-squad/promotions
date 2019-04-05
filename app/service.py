@@ -139,7 +139,7 @@ def get_promotions(product_id):
 
     This endpoint will return a promotion based on the product id associated with the promotion
     """
-    app.logger.info('Request for promotion with product_id: %s', product_id)
+    app.logger.info('Request for promotion with product id: %s', product_id)
     promotion = Promotion.find_by_product(product_id)
     if not promotion:
         raise NotFound("Promotion for product with id '{}' was not found.".format(product_id))

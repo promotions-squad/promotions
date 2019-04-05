@@ -11,13 +11,13 @@ class PromotionFactory(factory.Factory):
     class Meta:
         model = Promotion
     id = factory.Sequence(lambda n: n)
-    product_id = ff.FuzzyText(length=16)
+    productid = ff.FuzzyText(length=16)
     category = ff.FuzzyChoice(choices=['dollar', 'percentage', 'BOGO', 'BOHO'])
     available = ff.FuzzyChoice(choices=[True, False])
     discount = ff.FuzzyDecimal(50.0)
-    start_date = ff.FuzzyDate(datetime.date.today()-datetime.timedelta(days=10),
+    startdate = ff.FuzzyDate(datetime.date.today()-datetime.timedelta(days=10),
                               datetime.date.today())
-    end_date = ff.FuzzyDate(datetime.date.today(),
+    enddate = ff.FuzzyDate(datetime.date.today(),
                             datetime.date.today()+datetime.timedelta(days=10))
 
 if __name__ == '__main__':

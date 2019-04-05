@@ -80,24 +80,24 @@ class TestPromotionServer(unittest.TestCase):
         self.assertTrue(location != None)
         # Check the data is correct
         new_promotion = resp.get_json()
-        self.assertEqual(new_promotion['product_id'], test_promotion.product_id, "Product ID does not match")
+        self.assertEqual(new_promotion['productid'], test_promotion.productid, "Product ID does not match")
         self.assertEqual(new_promotion['category'], test_promotion.category, "Categories do not match")
         self.assertEqual(new_promotion['available'], test_promotion.available, "Availability does not match")
         self.assertEqual(new_promotion['discount'], test_promotion.discount, "Discount does not match")
-#        self.assertEqual(new_promotion['start_date'], test_promotion.start_date, "Start Date does not match")
-#        self.assertEqual(new_promotion['end_date'], test_promotion.end_date, "End Date does not match")
+        self.assertEqual(new_promotion['startdate'], test_promotion.startdate, "Start Date does not match")
+        self.assertEqual(new_promotion['enddate'], test_promotion.enddate, "End Date does not match")
 
         # Check that the location header was correct
         resp = self.app.get(location,
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         new_promotion = resp.get_json()
-        self.assertEqual(new_promotion['product_id'], test_promotion.product_id, "Product ID does not match")
+        self.assertEqual(new_promotion['productid'], test_promotion.productid, "Product ID does not match")
         self.assertEqual(new_promotion['category'], test_promotion.category, "Categories do not match")
         self.assertEqual(new_promotion['available'], test_promotion.available, "Availability does not match")
         self.assertEqual(new_promotion['discount'], test_promotion.discount, "Discount does not match")
-#        self.assertEqual(new_promotion['start_date'], test_promotion.start_date, "Start Date does not match")
-#        self.assertEqual(new_promotion['end_date'], test_promotion.end_date, "End Date does not match")
+        self.assertEqual(new_promotion['startdate'], test_promotion.startdate, "Start Date does not match")
+        self.assertEqual(new_promotion['enddate'], test_promotion.enddate, "End Date does not match")
 
     def test_update_promotion(self):
         """ Update an existing Promotion """
