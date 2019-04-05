@@ -5,7 +5,7 @@ Test cases can be run with:
   nosetests
   coverage report -m
 """
-
+import datetime
 import unittest
 import os
 from app.models import Promotion, DataValidationError, db
@@ -41,21 +41,31 @@ class TestPromotions(unittest.TestCase):
 
     def test_create_a_promotion(self):
         """ Create a promotion and assert that it exists """
-        promotion = Promotion(product_id="1234", category="dollar", available=True, discount="5", start_date=factory.LazyFunction(datetime.date.today),factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
+        promotion = Promotion(product_id="1234",
+                              category="dollar",
+                              available=True,
+                              discount=5.0,
+                              start_date=datetime.date.today(),
+                              end_date=datetime.date.today()+datetime.timedelta(days=10))
         self.assertTrue(promotion != None)
         self.assertEqual(promotion.id, None)
         self.assertEqual(promotion.product_id, "1234")
         self.assertEqual(promotion.category, "dollar")
         self.assertEqual(promotion.available, True)
-        self.assertEqual(promotion.discount, "5")
-        self.assertEqual(promotion.start_date, factory.LazyFunction(datetime.date.today))
-        self.assertEqual(promotion.end_date, factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
+        self.assertEqual(promotion.discount, 5.0)
+        self.assertEqual(promotion.start_date, datetime.date.today())
+        self.assertEqual(promotion.end_date, datetime.date.today()+datetime.timedelta(days=10))
 
     def test_add_a_promotion(self):
         """ Create a promotion and add it to the database """
         promotions = Promotion.all()
         self.assertEqual(promotions, [])
-        promotion = Promotion(product_id="1234", category="dollar", available=True, discount="5", start_date=factory.LazyFunction(datetime.date.today),factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
+        promotion = Promotion(product_id="1234",
+                              category="dollar",
+                              available=True,
+                              discount=5,
+                              start_date=datetime.date.today(),
+                              end_date=datetime.date.today()+datetime.timedelta(days=10))
         self.assertTrue(promotion != None)
         self.assertEqual(promotion.id, None)
         promotion.save()
@@ -66,7 +76,12 @@ class TestPromotions(unittest.TestCase):
 
     def test_update_a_promotion(self):
         """ Update a Promotion """
-        promotion = Promotion(product_id="1234", category="dollar", available=True, discount="5", start_date=factory.LazyFunction(datetime.date.today),factory.LazyFunction(datetime.date.today+datetime.timedelta(days=10)))
+        promotion = Promotion(product_id="1234",
+                              category="dollar",
+                              available=True,
+                              discount=5.0,
+                              start_date=datetime.date.today(),
+                              end_date=datetime.date.today()+datetime.timedelta(days=10))
         promotion.save()
         self.assertEqual(promotion.id, 1)
         # Change it an save it
