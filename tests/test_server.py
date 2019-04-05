@@ -128,7 +128,7 @@ class TestPromotionServer(unittest.TestCase):
         # create a promotion to update
         test_promotion = PromotionFactory()
         resp = self.app.post('/promotions',
-                            json=json=test_promotion.serialize(),
+                            json=test_promotion.serialize(),
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
