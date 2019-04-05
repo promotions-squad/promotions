@@ -91,7 +91,7 @@ class Promotion(db.Model):
             self.productid = data['productid']
             self.category = data['category']
             self.available = data['available']
-	        self.discount = data['discount']
+            self.discount = data['discount']
 #	    self.startdate = data['startdate']
 #	    self.enddate = data['enddate']
         except KeyError as error:
