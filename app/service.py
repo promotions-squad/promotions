@@ -140,7 +140,7 @@ def create_promotions():
     promotion.deserialize(request.get_json())
     promotion.save()
     message = promotion.serialize()
-    location_url = url_for('get_promotions', promotion_id=promotion.id, _external=True)
+    location_url = url_for('get_promotions', promotion_id=productid.id, _external=True)
     return make_response(jsonify(message), status.HTTP_201_CREATED,
                          {
                              'Location': location_url
