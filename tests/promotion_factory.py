@@ -15,10 +15,10 @@ class PromotionFactory(factory.Factory):
     category = ff.FuzzyChoice(choices=['dollar', 'percentage', 'BOGO', 'BOHO'])
     available = ff.FuzzyChoice(choices=[True, False])
     discount = ff.FuzzyDecimal(50.0)
-    startdate = ff.FuzzyDate(datetime.date.today()-datetime.timedelta(days=10),
-                              datetime.date.today())
-    enddate = ff.FuzzyDate(datetime.date.today(),
-                            datetime.date.today()+datetime.timedelta(days=10))
+#    startdate = ff.FuzzyDate(datetime.date.today()-datetime.timedelta(days=10),
+#                              datetime.date.today())
+#    enddate = ff.FuzzyDate(datetime.date.today(),
+#                            datetime.date.today()+datetime.timedelta(days=10))
 
 if __name__ == '__main__':
     for _ in range(10):
