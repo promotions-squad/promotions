@@ -14,7 +14,7 @@ class PromotionFactory(factory.Factory):
     class Meta:
         model = Promotion
     id = factory.Sequence(lambda n: n)
-    productid = factory.Sequence(lambda n: n)
+    productid = FuzzyFloat(9999)
     category = FuzzyChoice(choices=['dollar', 'percentage', 'BOGO', 'BOHO'])
     available = FuzzyChoice(choices=[True, False])
     discount = FuzzyFloat(50)
