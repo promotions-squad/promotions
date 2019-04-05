@@ -36,6 +36,7 @@ from models import Promotion, DataValidationError
 
 # Import Flask application
 from . import app
+import json
 
 ######################################################################
 # Custom Exceptions
@@ -97,12 +98,15 @@ def list_promotions():
     """ Returns all of the Promotions """
     app.logger.info('Request for promotion list')
     promotions = []
+    productid = request.args.get('productid')
     category = request.args.get('category')
-    name = request.args.get('name')
-    if category:
+    available = request.args.get('available')
+    if productid:
+        promotions = Promotion.find_by_product(productid)
+    elif category:
         promotions = Promotion.find_by_category(category)
-    elif name:
-        promotions = Promotion.find_by_name(name)
+    elif available:
+        promotions = Promotion.find_by_availablility(available)
     else:
         promotions = Promotion.all()
 
@@ -120,7 +124,7 @@ def create_promotions():
     app.logger.info('Request to create a promotion')
     check_content_type('application/json')
     promotion = Promotion()
-    promotion.deserialize(request.get_json())
+    promotion.deserialize(json.loads(request.get_json()))
     promotion.save()
     message = promotion.serialize()
     location_url = url_for('get_promotions', promotion_id=promotions.id, _external=True)

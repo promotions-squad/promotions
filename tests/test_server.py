@@ -53,7 +53,7 @@ class TestPromotionServer(unittest.TestCase):
         for _ in range(count):
             test_promotion = PromotionFactory()
             resp = self.app.post('/promotions',
-                                 json=json.dumps(test_promotion.serialize(),default=str),
+                                 json=test_promotion.serialize(),
                                  content_type='application/json')
             self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create test promotion')
             new_promotion = resp.get_json()
@@ -72,6 +72,7 @@ class TestPromotionServer(unittest.TestCase):
         """ Create a new Promotion """
         test_promotion = PromotionFactory()
         resp = self.app.post('/promotions',
+#                             json=test_promotion.serialize(),
                              json=json.dumps(test_promotion.serialize(),default=str),
                              content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
