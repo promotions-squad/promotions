@@ -117,11 +117,11 @@ class Promotion(db.Model):
         cls.logger.info('Processing all Promotions')
         return cls.query.all()
 
-#    @classmethod
-#    def find(cls, id):
-#        """ Finds a Promotion by it's ID """
-#        cls.logger.info('Processing lookup for id %s ...', id)
-#        return cls.query.get(id)
+    @classmethod
+    def find(cls, id):
+        """ Finds a Promotion by it's ID """
+        cls.logger.info('Processing lookup for id %s ...', id)
+        return cls.query.get(id)
 
     @classmethod
     def find_or_404(cls, promotion_id):
