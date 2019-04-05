@@ -157,10 +157,10 @@ class TestPromotions(unittest.TestCase):
         promotion = Promotion(productid=1234, category="dollar", available=True, discount=5.0)
 #                          startdate = datetime.date.today(),
 #                          enddate = datetime.date.today()+datetime.timedelta(days=10)
-        promo.save()
-        promotion = Promotion.find_or_404(promo.id)
+        promotion.save()
+        promotion = Promotion.find_or_404(promotion.id)
         self.assertIsNot(promotion, None)
-        self.assertEqual(promotion.id, promo.id)
+        self.assertEqual(promotion.id, promotion.id)
         self.assertEqual(promotion.productid, 4321)
         self.assertEqual(promotion.category, "percentage")
         self.assertEqual(promotion.available, False)
