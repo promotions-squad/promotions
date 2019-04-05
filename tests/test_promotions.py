@@ -192,16 +192,10 @@ class TestPromotions(unittest.TestCase):
 
     def test_find_by_category(self):
         """ Find Promotions by Category """
-        Promotion(productid="1234",
-                  category="dollar",
-                  available=True,
-                  discount=5.0)
+        Promotion(productid="1234", category="dollar", available=True, discount=5.0).save()
 #                  startdate=datetime.date.today(),
 #                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
-        Promotion(productid="4321",
-                  category="percentage",
-                  available=False,
-                  discount=20.0,
+        Promotion(productid="4321", category="percentage", available=False, discount=20.0).save()
 #                  startdate=datetime.date.today(),
 #                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         promotions = Promotion.find_by_category("percentage")
@@ -214,16 +208,10 @@ class TestPromotions(unittest.TestCase):
 
     def test_find_by_product(self):
         """ Find a Promotion by productid """
-        Promotion(productid="1234",
-                  category="dollar",
-                  available=True,
-                  discount=5.0)
+        Promotion(productid="1234", category="dollar", available=True, discount=5.0).save()
 #                  startdate=datetime.date.today(),
 #                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
-        Promotion(productid="4321",
-                  category="percentage",
-                  available=False,
-                  discount=20.0)
+        Promotion(productid="4321", category="percentage", available=False, discount=20.0).save()
 #                  startdate=datetime.date.today(),
 #                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         promotions = Promotion.find_by_product("4321")
@@ -236,16 +224,10 @@ class TestPromotions(unittest.TestCase):
 
     def test_find_by_availability(self):
         """ Find a Promotion by availability """
-        Promotion(productid="1234",
-                  category="dollar",
-                  available=True,
-                  discount=5.0)
+        Promotion(productid="1234", category="dollar", available=True, discount=5.0).save()
 #                  startdate=datetime.date.today(),
 #                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
-        Promotion(productid="4321",
-                  category="percentage",
-                  available=False,
-                  discount=20.0)
+        Promotion(productid="4321", category="percentage", available=False, discount=20.0).save()
 #                  startdate=datetime.date.today(),
 #                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
         promotions = Promotion.find_by_availability(False)
