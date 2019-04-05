@@ -184,14 +184,12 @@ class TestPromotionServer(unittest.TestCase):
             self.assertEqual(promotion['available'], test_availability)
 
 
-
-
     def test_method_not_allowed(self):
         """ Test a sending invalid http method """
         resp = self.app.post('/promotions/1')
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    @patch('app.service.Promotion.all')
+    #@patch('app.service.Promotion.all')
     def test_unexpected_error(self, bad_request_mock):
         """ Test an unexpected error from Find All """
         bad_request_mock.side_effect = KeyError
