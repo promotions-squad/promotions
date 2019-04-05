@@ -123,19 +123,19 @@ class TestPromotionServer(unittest.TestCase):
         self.assertEqual(new_promotion['startdate'], test_promotion.startdate, "Start Date does not match")
         self.assertEqual(new_promotion['enddate'], test_promotion.enddate, "End Date does not match")
 
-#    def test_update_promotion(self):
-#        """ Update an existing Promotion """
-#        # create a promotion to update
-#        test_promotion = PromotionFactory()
-##                             json=json.dumps(test_promotion.serialize(),default=str),
-#                             content_type='application/json')
-##
-##        new_promotion = resp.get_json()
-##        resp = self.app.put('/promotions/{}'.format(new_promotion['id']),
-#                            json=new_promotion,
-#                            content_type='application/json')
-##        updated_promotion = resp.get_json()
-#        self.assertEqual(updated_promotion['category'], 'unknown')
+    def test_update_promotion(self):
+        """ Update an existing Promotion """
+        # create a promotion to update
+        test_promotion = PromotionFactory()
+                             json=json.dumps(test_promotion.serialize(),default=str),
+                             content_type='application/json')
+
+        new_promotion = resp.get_json()
+        resp = self.app.put('/promotions/{}'.format(new_promotion['id']),
+                            json=new_promotion,
+                            content_type='application/json')
+        updated_promotion = resp.get_json()
+        self.assertEqual(updated_promotion['category'], 'unknown')
 
     def test_delete_promotion(self):
         """ Delete a Promotion """
