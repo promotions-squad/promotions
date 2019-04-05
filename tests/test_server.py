@@ -183,19 +183,19 @@ class TestPromotionServer(unittest.TestCase):
             self.assertEqual(promotion['available'], test_availability)
 
 
-    # @patch('app.service.Pet.find_by_name')
-    # def test_bad_request(self, bad_request_mock):
-    #     """ Test a Bad Request error from Find By Name """
-    #     bad_request_mock.side_effect = DataValidationError()
-    #     resp = self.app.get('/pets', query_string='name=fido')
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-    #
-    # @patch('app.service.Pet.find_by_name')
-    # def test_mock_search_data(self, pet_find_mock):
-    #     """ Test showing how to mock data """
-    #     pet_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'fido'})]
-    #     resp = self.app.get('/pets', query_string='name=fido')
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    @patch('app.service.Promotion.find_by_name')
+    def test_bad_request(self, bad_request_mock):
+         """ Test a Bad Request error from Find By Name """
+         bad_request_mock.side_effect = DataValidationError()
+         resp = self.app.get('/promotions', query_string='productid=1234')
+         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch('app.service.Promotion.find_by_name')
+    def test_mock_search_data(self, promotion_find_mock):
+         """ Test showing how to mock data """
+         promotion_find_mock.return_value = [MagicMock(serialize=lambda: {'productid': '1234'})]
+         resp = self.app.get('/promotions', query_string='productid=1234')
+         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
 ######################################################################
 #   M A I N
