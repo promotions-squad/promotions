@@ -91,9 +91,9 @@ class Promotion(db.Model):
             self.productid = data['productid']
             self.category = data['category']
             self.available = data['available']
-	    self.discount = float(data['discount'])
-	    self.startdate = datetime.strptime(data['startdate'],'%Y-%m-%d')
-	    self.enddate = datetime.strptime(data['enddate'],'%Y-%m-%d')
+	    self.discount = data['discount']
+	    self.startdate = data['startdate']
+	    self.enddate = data['enddate']
         except KeyError as error:
             raise DataValidationError('Invalid Promotion: missing ' + error.args[0])
         except TypeError as error:
@@ -117,11 +117,11 @@ class Promotion(db.Model):
         cls.logger.info('Processing all Promotions')
         return cls.query.all()
 
-    @classmethod
-    def find(cls, id):
-        """ Finds a Promotion by it's ID """
-        cls.logger.info('Processing lookup for id %s ...', id)
-        return cls.query.get(id)
+#    @classmethod
+#    def find(cls, id):
+#        """ Finds a Promotion by it's ID """
+#        cls.logger.info('Processing lookup for id %s ...', id)
+#        return cls.query.get(id)
 
     @classmethod
     def find_or_404(cls, id):

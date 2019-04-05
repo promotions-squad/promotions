@@ -180,15 +180,15 @@ class TestPromotions(unittest.TestCase):
                           enddate = datetime.date.today()+datetime.timedelta(days=10)
         )
         promo.save()
-        promotion = Promotion.find(promo.id)
+        promotion = Promotion.find_or_404(promo.id)
         self.assertIsNot(promotion, None)
         self.assertEqual(promotion.id, promo.id)
         self.assertEqual(promotion.productid, "4321")
         self.assertEqual(promotion.category, "percentage")
         self.assertEqual(promotion.available, False)
-        self.assertEqual(promotions[0].discount, 20.0)
-        self.assertEqual(promotions[0].startdate, datetime.date.today())
-        self.assertEqual(promotions[0].enddate, datetime.date.today()+datetime.timedelta(days=10))
+        self.assertEqual(promotion.discount, 20.0)
+        self.assertEqual(promotion.startdate, datetime.date.today())
+        self.assertEqual(promotion.enddate, datetime.date.today()+datetime.timedelta(days=10))
 
 
     def test_find_by_category(self):
