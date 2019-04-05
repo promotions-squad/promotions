@@ -124,19 +124,19 @@ class Promotion(db.Model):
 #        return cls.query.get(id)
 
     @classmethod
-    def find_or_404(cls, id):
+    def find_or_404(cls, promotion_id):
         """ Find a Promotion by it's id """
         cls.logger.info('Processing lookup or 404 for id %s ...', id)
-        return cls.query.get_or_404(id)
+        return cls.query.get_or_404(promotion_id)
 
     @classmethod
-    def find_by_product(cls, product_id):
+    def find_by_product(cls, productid):
         """ Returns all Promotions for a specific product
         Args:
-            available (string): product_id
+            available (string): productid
         """
-        cls.logger.info('Processing product_id query for %s ...', product_id)
-        return cls.query.filter(cls.productid == product_id)
+        cls.logger.info('Processing productid query for %s ...', productid)
+        return cls.query.filter(cls.productid == productid)
 
     @classmethod
     def find_by_category(cls, category):
