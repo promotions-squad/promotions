@@ -15,7 +15,7 @@ class PromotionFactory(factory.Factory):
     productid = factory.Faker('product_id')
     category = FuzzyChoice(choices=['dollar', 'percentage', 'BOGO', 'BOHO'])
     available = FuzzyChoice(choices=[True, False])
-    discount = factory.FuzzyInteger(50)
+    discount = FuzzyFloat(50)
 #    startdate = ff.FuzzyDate(datetime.date.today()-datetime.timedelta(days=10),
 #                              datetime.date.today())
 #    enddate = ff.FuzzyDate(datetime.date.today(),
