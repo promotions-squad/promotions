@@ -52,8 +52,8 @@ class Promotion(db.Model):
     category = db.Column(db.String(63))
     available = db.Column(db.Boolean())
     discount = db.Column(db.Float())
-    startdate = db.Column(db.Date())
-    enddate = db.Column(db.Date())
+#    startdate = db.Column(db.Date())
+#    enddate = db.Column(db.Date())
 
     def __repr__(self):
         return '<Promotion %r>' % (self.proudct_id)
@@ -77,9 +77,9 @@ class Promotion(db.Model):
                 "productid": self.productid,
                 "category": self.category,
                 "available": self.available,
-		"discount": self.discount,
-		"startdate": self.startdate,
-		"enddate": self.enddate}
+		        "discount": self.discount}
+#		"startdate": self.startdate,
+#		"enddate": self.enddate}
 
     def deserialize(self, data):
         """
@@ -91,9 +91,9 @@ class Promotion(db.Model):
             self.productid = data['productid']
             self.category = data['category']
             self.available = data['available']
-	    self.discount = data['discount']
-	    self.startdate = data['startdate']
-	    self.enddate = data['enddate']
+	        self.discount = data['discount']
+#	    self.startdate = data['startdate']
+#	    self.enddate = data['enddate']
         except KeyError as error:
             raise DataValidationError('Invalid Promotion: missing ' + error.args[0])
         except TypeError as error:
