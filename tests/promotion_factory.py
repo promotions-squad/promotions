@@ -6,6 +6,7 @@ import factory
 #import factory.fuzzy as ff
 from factory.fuzzy import FuzzyChoice
 from factory.fuzzy import FuzzyFloat
+from factory.fuzzy import FuzzyText
 from app.models import Promotion
 
 class PromotionFactory(factory.Factory):
@@ -13,7 +14,7 @@ class PromotionFactory(factory.Factory):
     class Meta:
         model = Promotion
     id = factory.Sequence(lambda n: n)
-    productid = factory.Faker('product_id')
+    productid = factory.fuzzy.FuzzyText(length=4, chars=string.ascii_numbers)
     category = FuzzyChoice(choices=['dollar', 'percentage', 'BOGO', 'BOHO'])
     available = FuzzyChoice(choices=[True, False])
     discount = FuzzyFloat(50)
