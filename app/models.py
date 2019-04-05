@@ -48,7 +48,7 @@ class Promotion(db.Model):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    productid = db.Column(db.Float())
+    productid = db.Column(db.String(63))
     category = db.Column(db.String(63))
     available = db.Column(db.Boolean())
     discount = db.Column(db.Float())
