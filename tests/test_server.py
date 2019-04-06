@@ -217,21 +217,21 @@ class TestPromotionServer(unittest.TestCase):
     def test_method_not_supported(self, method_mock):
          """ Handles unsuppoted HTTP methods with 405_METHOD_NOT_SUPPORTED """
          method_mock.side_effect = None
-         resp = self.app.put('/promotion', query_string='productid=1234')
+         resp = self.app.put('/promotions', query_string='productid=1234')
          self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @mock.patch('app.service.Promotion.find_by_product')
     def test_mediatype_not_supported(self, media_mock):
          """ Handles unsuppoted media requests with 415_UNSUPPORTED_MEDIA_TYPE """
          media_mock.side_effect = DataValidationError()
-         resp = self.app.post('/promotion', query_string='productid=1234', content_type='application/pdf')
+         resp = self.app.post('/promotions', query_string='productid=1234', content_type='application/pdf')
          self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     @mock.patch('app.service.Promotion.find_by_product')
     def test_search_bad_data(self, inventory_find_mock):
         """ Test a search that returns bad data """
         inventory_find_mock.return_value = None
-        resp = self.app.get('/promotion', query_string='productid=1234')
+        resp = self.app.get('/promotions', query_string='productid=1234')
         self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ######################################################################
