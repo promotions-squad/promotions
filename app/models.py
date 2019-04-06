@@ -148,7 +148,7 @@ class Promotion(db.Model):
         return cls.query.filter(cls.category == category)
 
     @classmethod
-    def find_by_availability(cls, available=True):
+    def find_by_availability(cls, available):
         """ Query that finds Promotions by their availability """
         """ Returns all Promotions by their availability
         Args:
