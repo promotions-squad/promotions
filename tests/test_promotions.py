@@ -154,7 +154,7 @@ class TestPromotions(unittest.TestCase):
         promotion = Promotion(productid=1234, category="dollar", available=True, discount=5.0)
 #                  startdate=datetime.date.today(),
 #                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
-        promotion = Promotion(productid=1234, category="dollar", available=True, discount=5.0)
+        promotion = Promotion(productid=4321, category="dollar", available=True, discount=5.0)
 #                          startdate = datetime.date.today(),
 #                          enddate = datetime.date.today()+datetime.timedelta(days=10)
         promotion.save()
