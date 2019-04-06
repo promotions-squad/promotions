@@ -123,15 +123,16 @@ def list_promotions():
     elif category:
         promotions = Promotion.find_by_category(category)
     elif available:
-        promotions = Promotion.find_by_availablility(available)
+        promotions = Promotion.find_by_availability(available)
     else:
         promotions = Promotion.all()
 
     results = [promotion.serialize() for promotion in promotions]
     return make_response(jsonify(results), status.HTTP_200_OK)
 
-
-#Add a new Promotion
+######################################################################
+#ADD A NEW PROMOTION
+######################################################################
 @app.route('/promotions', methods=['POST'])
 def create_promotions():
     """
@@ -151,7 +152,7 @@ def create_promotions():
                          })
 
 ######################################################################
-# RETRIEVE A PROMOTION BASED ON PRODUCT ID
+# RETRIEVE A PROMOTION BASED ON PROMOTION ID
 ######################################################################
 @app.route('/promotions/<int:promotion_id>', methods=['GET'])
 def get_promotions(promotion_id):
@@ -165,6 +166,28 @@ def get_promotions(promotion_id):
     if not promotion:
         raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
     return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# CANCEL A PROMOTION
+######################################################################
+
+@app.route('/promotions/<int:promotion_id>/cancel', methods=['PUT'])
+def cancel_promotions(promotion_id):
+    """
+    Update a Promotion
+    This endpoint will update a Promotion based the body that is posted
+    """
+    app.logger.info('Request to cancel promotion with id: %s', promotion_id)
+    check_content_type('application/json')
+    promotion = Promotion.find(promotion_id)
+    if not promotion:
+        raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
+    promotion.deserialize(request.get_json())
+    promotion.available = False
+    promotion.save()
+    return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
+
+
 
 ######################################################################
 # DELETE A PROMOTION

@@ -151,13 +151,13 @@ class TestPromotions(unittest.TestCase):
 
     def test_find_promotion(self):
         """ Find a Promotion by ID """
-        promotion = Promotion(productid=1234, category="dollar", available=True, discount=5.0)
+        Promotion(productid=1234, category="dollar", available=True, discount=5.0).save()
 #                  startdate=datetime.date.today(),
 #                  enddate=datetime.date.today()+datetime.timedelta(days=10)).save()
-        promotion = Promotion(productid=4321, category="dollar", available=True, discount=5.0)
+        Promotion(productid=4321, category="percentage", available=False, discount=20.0).save()
 #                          startdate = datetime.date.today(),
 #                          enddate = datetime.date.today()+datetime.timedelta(days=10)
-        promotion.save()
+        #promotion.save()
         promotion = Promotion.find_or_404(promotion.id)
         self.assertIsNot(promotion, None)
         self.assertEqual(promotion.id, promotion.id)
