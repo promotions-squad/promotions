@@ -151,9 +151,27 @@ def create_promotions():
                          })
 
 ######################################################################
+# RETRIEVE A PROMOTION BASED ON PROMOTION ID
+######################################################################
+@app.route('/promotions/<int:promotion_id>', methods=['GET'])
+def get_promotions(promotion_id):
+    """
+    Retrieve promotions that apply to a product
+
+    This endpoint will return a promotion based on the product id associated with the promotion
+    """
+    app.logger.info('Request for promotion with product id: %s', promotion_id)
+    promotion = Promotion.find(promotion_id)
+    if not promotion:
+        raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
+    return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
+
+
+
+######################################################################
 # RETRIEVE A PROMOTION BASED ON PRODUCT ID
 ######################################################################
-@app.route('/promotions/product/<int:promotion_id>', methods=['GET'])
+@app.route('/promotions/productid/<int:promotion_id>', methods=['GET'])
 def get_promotions(promotion_id):
     """
     Retrieve promotions that apply to a product
