@@ -92,7 +92,6 @@ class TestPromotionServer(unittest.TestCase):
         resp = self.app.get('/promotions/0')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-
     def test_create_promotion(self):
         """ Create a new Promotion """
         test_promotion = PromotionFactory()
@@ -146,7 +145,7 @@ class TestPromotionServer(unittest.TestCase):
     def test_delete_promotion(self):
         """ Delete a Promotion """
         test_promotion = self._create_promotions(1)[0]
-        resp = self.app.delete('/Promotions/{}'.format(test_promotion.id),
+        resp = self.app.delete('/promotions/{}'.format(test_promotion.id),
                                content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(resp.data), 0)
