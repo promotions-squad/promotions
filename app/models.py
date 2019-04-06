@@ -19,7 +19,7 @@ Models
 Promotion - A Promotion used in the Store
 Attributes:
 -----------
-productid (string) - the productid the promotion applies to
+productid (float) - the productid the promotion applies to
 category (string) - the category the promotion belongs to (i.e., percentage, dollar amount off)
 available (boolean) - True for promotions that are enabled for a productid
 discount (float) - the amount of the promotional discount (for percentage will be a decimal, for dollar will be a number)
@@ -48,12 +48,12 @@ class Promotion(db.Model):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    productid = db.Column(db.String(63))
+    productid = db.Column(db.Float())
     category = db.Column(db.String(63))
     available = db.Column(db.Boolean())
     discount = db.Column(db.Float())
-    startdate = db.Column(db.Date())
-    enddate = db.Column(db.Date())
+#    startdate = db.Column(db.Date())
+#    enddate = db.Column(db.Date())
 
     def __repr__(self):
         return '<Promotion %r>' % (self.proudct_id)
@@ -77,9 +77,9 @@ class Promotion(db.Model):
                 "productid": self.productid,
                 "category": self.category,
                 "available": self.available,
-		"discount": self.discount,
-		"startdate": self.startdate,
-		"enddate": self.enddate}
+		        "discount": self.discount}
+#		"startdate": self.startdate,
+#		"enddate": self.enddate}
 
     def deserialize(self, data):
         """
@@ -91,9 +91,9 @@ class Promotion(db.Model):
             self.productid = data['productid']
             self.category = data['category']
             self.available = data['available']
-	    self.discount = data['discount']
-	    self.startdate = data['startdate']
-	    self.enddate = data['enddate']
+            self.discount = data['discount']
+#	    self.startdate = data['startdate']
+#	    self.enddate = data['enddate']
         except KeyError as error:
             raise DataValidationError('Invalid Promotion: missing ' + error.args[0])
         except TypeError as error:
@@ -117,26 +117,26 @@ class Promotion(db.Model):
         cls.logger.info('Processing all Promotions')
         return cls.query.all()
 
-#    @classmethod
-#    def find(cls, id):
-#        """ Finds a Promotion by it's ID """
-#        cls.logger.info('Processing lookup for id %s ...', id)
-#        return cls.query.get(id)
+    @classmethod
+    def find(cls, id):
+        """ Finds a Promotion by it's ID """
+        cls.logger.info('Processing lookup for id %s ...', id)
+        return cls.query.get(id)
 
     @classmethod
-    def find_or_404(cls, id):
+    def find_or_404(cls, promotion_id):
         """ Find a Promotion by it's id """
         cls.logger.info('Processing lookup or 404 for id %s ...', id)
-        return cls.query.get_or_404(id)
+        return cls.query.get_or_404(promotion_id)
 
     @classmethod
-    def find_by_product(cls, product_id):
+    def find_by_product(cls, productid):
         """ Returns all Promotions for a specific product
         Args:
-            available (string): product_id
+            available (string): productid
         """
-        cls.logger.info('Processing product_id query for %s ...', product_id)
-        return cls.query.filter(cls.productid == product_id)
+        cls.logger.info('Processing productid query for %s ...', productid)
+        return cls.query.filter(cls.productid == productid)
 
     @classmethod
     def find_by_category(cls, category):

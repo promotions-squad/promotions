@@ -49,36 +49,53 @@ class DataValidationError(ValueError):
 ######################################################################
 @app.errorhandler(DataValidationError)
 def request_validation_error(error):
-    message = str(error)
-    app.logger.info(message)
-    return jsonify(status=400, error='Bad Request', message=message), \
-                   status.HTTP_400_BAD_REQUEST
+    """ Handles Value Errors from bad data """
+    return bad_request(error)
 
-@app.errorhandler(404)
-def not_found(error):
-    message = str(error)
-    app.logger.info(message)
-    return jsonify(status=404, error='Not Found', message=message), \
-                   status.HTTP_404_NOT_FOUND
-
-@app.errorhandler(400)
+@app.errorhandler(status.HTTP_400_BAD_REQUEST)
 def bad_request(error):
-    message = str(error)
-    app.logger.info(message)
-    return jsonify(status=400, error='Bad Request', message=message), \
-                   status.HTTP_400_BAD_REQUEST
+    """ Handles bad reuests with 400_BAD_REQUEST """
+    message = error.message or str(error)
+    app.logger.warning(message)
+    return jsonify(status=status.HTTP_400_BAD_REQUEST,
+                   error='Bad Request',
+                   message=message), status.HTTP_400_BAD_REQUEST
 
-@app.errorhandler(405)
-def method_not_allowed(error):
-    return jsonify(status=405, error='Method not Allowed',
-                   message='Your request method is not supported. Check your HTTP method and try again.'), \
-                   status.HTTP_405_METHOD_NOT_ALLOWED
+@app.errorhandler(status.HTTP_404_NOT_FOUND)
+def not_found(error):
+    """ Handles resources not found with 404_NOT_FOUND """
+    message = error.message or str(error)
+    app.logger.warning(message)
+    return jsonify(status=status.HTTP_404_NOT_FOUND,
+                   error='Not Found',
+                   message=message), status.HTTP_404_NOT_FOUND
 
-@app.errorhandler(500)
-def internal_error(error):
-    return jsonify(status=500, error='Internal Server Error',
-                   message='Houston... we have a problem.'), \
-                   status.HTTP_500_INTERNAL_SERVER_ERROR
+@app.errorhandler(status.HTTP_405_METHOD_NOT_ALLOWED)
+def method_not_supported(error):
+    """ Handles unsuppoted HTTP methods with 405_METHOD_NOT_SUPPORTED """
+    message = error.message or str(error)
+    app.logger.warning(message)
+    return jsonify(status=status.HTTP_405_METHOD_NOT_ALLOWED,
+                   error='Method not Allowed',
+                   message=message), status.HTTP_405_METHOD_NOT_ALLOWED
+
+@app.errorhandler(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+def mediatype_not_supported(error):
+    """ Handles unsuppoted media requests with 415_UNSUPPORTED_MEDIA_TYPE """
+    message = error.message or str(error)
+    app.logger.warning(message)
+    return jsonify(status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                   error='Unsupported media type',
+                   message=message), status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+
+@app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
+def internal_server_error(error):
+    """ Handles unexpected server error with 500_SERVER_ERROR """
+    message = error.message or str(error)
+    app.logger.error(message)
+    return jsonify(status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                   error='Internal Server Error',
+                   message=message), status.HTTP_500_INTERNAL_SERVER_ERROR
 
 #Get Index
 @app.route('/')
@@ -127,7 +144,7 @@ def create_promotions():
     promotion.deserialize(json.loads(request.get_json()))
     promotion.save()
     message = promotion.serialize()
-    location_url = url_for('get_promotions', promotion_id=promotions.id, _external=True)
+    location_url = url_for('get_promotions', promotion_id=promotion.id, _external=True)
     return make_response(jsonify(message), status.HTTP_201_CREATED,
                          {
                              'Location': location_url
@@ -136,17 +153,17 @@ def create_promotions():
 ######################################################################
 # RETRIEVE A PROMOTION BASED ON PRODUCT ID
 ######################################################################
-@app.route('/promotions/product/<int:product_id>', methods=['GET'])
-def get_promotions(product_id):
+@app.route('/promotions/product/<int:promotion_id>', methods=['GET'])
+def get_promotions(promotion_id):
     """
     Retrieve promotions that apply to a product
 
     This endpoint will return a promotion based on the product id associated with the promotion
     """
-    app.logger.info('Request for promotion with product id: %s', product_id)
-    promotion = Promotion.find_by_product(product_id)
+    app.logger.info('Request for promotion with product id: %s', promotion_id)
+    promotion = Promotion.find(promotion_id)
     if not promotion:
-        raise NotFound("Promotion for product with id '{}' was not found.".format(product_id))
+        raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
     return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
 
 ######################################################################
@@ -154,12 +171,15 @@ def get_promotions(product_id):
 ######################################################################
 @app.route('/promotions/<int:promotion_id>', methods=['DELETE'])
 def delete_promotions(promotion_id):
-    app.logger.info('Request to delete Promotion with id: {}'.format(promotion_id))
+    """
+    Delete a Promotion
+    This endpoint will delete a Promotion based the id specified in the path
+    """
+    app.logger.info('Request to delete promotion with id: %s', promotion_id)
     promotion = Promotion.find(promotion_id)
     if promotion:
         promotion.delete()
     return make_response('', status.HTTP_204_NO_CONTENT)
-
 
 ######################################################################
 # UPDATE AN EXISTING PROMOTION
