@@ -141,7 +141,7 @@ def create_promotions():
     app.logger.info('Request to create a promotion')
     check_content_type('application/json')
     promotion = Promotion()
-    promotion.deserialize(json.loads(request.get_json()))
+    promotion.deserialize(request.get_json())
     promotion.save()
     message = promotion.serialize()
     location_url = url_for('get_promotions', promotion_id=promotion.id, _external=True)

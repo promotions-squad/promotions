@@ -56,7 +56,7 @@ class Promotion(db.Model):
 #    enddate = db.Column(db.Date())
 
     def __repr__(self):
-        return '<Promotion %r>' % (self.proudct_id)
+        return '<Promotion %r>' % (self.productid)
 
     def save(self):
         """
@@ -77,7 +77,7 @@ class Promotion(db.Model):
                 "productid": self.productid,
                 "category": self.category,
                 "available": self.available,
-		        "discount": self.discount}
+		"discount": self.discount}
 #		"startdate": self.startdate,
 #		"enddate": self.enddate}
 

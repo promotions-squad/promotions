@@ -192,7 +192,7 @@ class TestPromotionServer(unittest.TestCase):
     def test_bad_request(self, bad_request_mock):
          """ Test a Bad Request error from Find By Product """
          bad_request_mock.side_effect = DataValidationError()
-         resp = self.app.get('/promotion', query_string='productid=1234')
+         resp = self.app.get('/promotions', query_string='productid=1234')
          self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     @mock.patch('app.service.Promotion.find_by_product')
