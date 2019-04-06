@@ -85,7 +85,7 @@ class TestPromotionServer(unittest.TestCase):
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data['name'], test_promotion.name)
+        self.assertEqual(data['productid'], test_promotion.productid)
 
     def test_get_promotion_not_found(self):
         """ Get a Promotion thats not found """
@@ -122,6 +122,24 @@ class TestPromotionServer(unittest.TestCase):
         self.assertEqual(new_promotion['discount'], test_promotion.discount, "Discount does not match")
 #        self.assertEqual(new_promotion['startdate'], test_promotion.startdate, "Start Date does not match")
 #        self.assertEqual(new_promotion['enddate'], test_promotion.enddate, "End Date does not match")
+
+    def test_cancel_promotion(self):
+        """ Cancel an existing Promotion """
+        # create a promotion to update
+        test_promotion = PromotionFactory()
+        resp = self.app.post('/promotions',
+                            json=test_promotion.serialize(),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # update the promotion
+        new_promotion = resp.get_json()
+        resp = self.app.put('/promotions/{}/cancel'.format(new_promotion['id']),
+                            json=new_promotion,
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_promotion = resp.get_json()
+        self.assertEqual(updated_promotion['available'], False)
 
     def test_update_promotion(self):
         """ Update an existing Promotion """
@@ -209,7 +227,7 @@ class TestPromotionServer(unittest.TestCase):
          resp = self.app.post('/promotion', query_string='productid=1234', content_type='application/pdf')
          self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    @mock.patch('app.service.Promotion.find_by_name')
+    @mock.patch('app.service.Promotion.find_by_product')
     def test_search_bad_data(self, inventory_find_mock):
         """ Test a search that returns bad data """
         inventory_find_mock.return_value = None
