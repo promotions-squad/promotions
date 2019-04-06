@@ -153,7 +153,7 @@ def create_promotions():
 ######################################################################
 # RETRIEVE A PROMOTION BASED ON PRODUCT ID
 ######################################################################
-@app.route('/promotions/product/<int:promotion_id>', methods=['GET'])
+@app.route('/promotions/<int:promotion_id>', methods=['GET'])
 def get_promotions(promotion_id):
     """
     Retrieve promotions that apply to a product
