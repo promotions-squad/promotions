@@ -123,7 +123,7 @@ def list_promotions():
     elif category:
         promotions = Promotion.find_by_category(category)
     elif available:
-        promotions = Promotion.find_by_availability(available)
+        promotions = Promotion.find_by_availability(eval(available))
     else:
         promotions = Promotion.all()
 
@@ -166,6 +166,7 @@ def get_promotions(promotion_id):
     if not promotion:
         raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
     return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 # CANCEL A PROMOTION
