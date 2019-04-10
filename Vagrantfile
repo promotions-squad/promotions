@@ -72,7 +72,6 @@ Vagrant.configure("2") do |config|
     cd /vagrant
     pip install -r requirements.txt
    SHELL
-end
 
 ######################################################################
   # Setup a Bluemix and Kubernetes environment
