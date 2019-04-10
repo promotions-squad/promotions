@@ -19,7 +19,7 @@ Models
 Promotion - A Promotion used in the Store
 Attributes:
 -----------
-productid (float) - the productid the promotion applies to
+productid (Integer) - the productid the promotion applies to
 category (string) - the category the promotion belongs to (i.e., percentage, dollar amount off)
 available (boolean) - True for promotions that are enabled for a productid
 discount (float) - the amount of the promotional discount (for percentage will be a decimal, for dollar will be a number)
@@ -48,7 +48,7 @@ class Promotion(db.Model):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    productid = db.Column(db.Float())
+    productid = db.Column(db.Integer())
     category = db.Column(db.String(63))
     available = db.Column(db.Boolean())
     discount = db.Column(db.Float())
@@ -133,7 +133,7 @@ class Promotion(db.Model):
     def find_by_product(cls, productid):
         """ Returns all Promotions for a specific product
         Args:
-            available (string): productid
+            available (integer): productid
         """
         cls.logger.info('Processing productid query for %s ...', productid)
         return cls.query.filter(cls.productid == productid)
