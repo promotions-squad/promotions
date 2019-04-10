@@ -38,11 +38,7 @@ from models import Promotion, DataValidationError
 from . import app
 import json
 
-######################################################################
-# Custom Exceptions
-######################################################################
-#class DataValidationError(ValueError):
-#    pass
+
 
 ######################################################################
 # ERROR Handling
