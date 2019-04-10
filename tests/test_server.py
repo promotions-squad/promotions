@@ -200,6 +200,19 @@ class TestPromotionServer(unittest.TestCase):
         for promotion in data:
             self.assertEqual(promotion['available'], test_availability)
 
+    def test_query_promotion_list_by_productid(self):
+        """ Query Promotions by Product Id """
+        promotions = self._create_promotions(10)
+        test_productid = promotions[0].productid
+        productid_promotions = [promotion for promotion in promotions if promotion.productid == test_productid]
+        resp = self.app.get('/promotions',
+                            query_string='productid={}'.format(test_productid))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(productid_promotions))
+        # check the data just to be sure
+        for promotion in data:
+            self.assertEqual(promotion['productid'], test_productid)
 
     def test_method_not_allowed(self):
         """ Test a sending invalid http method """
