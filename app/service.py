@@ -38,11 +38,7 @@ from models import Promotion, DataValidationError
 from . import app
 import json
 
-######################################################################
-# Custom Exceptions
-######################################################################
-class DataValidationError(ValueError):
-    pass
+
 
 ######################################################################
 # ERROR Handling
@@ -54,7 +50,7 @@ def request_validation_error(error):
 
 @app.errorhandler(status.HTTP_400_BAD_REQUEST)
 def bad_request(error):
-    """ Handles bad reuests with 400_BAD_REQUEST """
+    """ Handles bad requests with 400_BAD_REQUEST """
     message = error.message or str(error)
     app.logger.warning(message)
     return jsonify(status=status.HTTP_400_BAD_REQUEST,
