@@ -115,7 +115,7 @@ def list_promotions():
     category = request.args.get('category')
     available = request.args.get('available')
     if productid:
-        promotions = Promotion.find_by_product(productid)
+        promotions = Promotion.find_by_product(float(productid))
     elif category:
         promotions = Promotion.find_by_category(category)
     elif available:
