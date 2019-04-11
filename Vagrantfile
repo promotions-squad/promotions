@@ -73,6 +73,11 @@ Vagrant.configure("2") do |config|
     pip install -r requirements.txt
    SHELL
 
+# Copy your IBM Clouid API Key if you have one
+  if File.exists?(File.expand_path("~/.bluemix/apiKey.json"))
+    config.vm.provision "file", source: "~/.bluemix/apiKey.json", destination: "~/.bluemix/apiKey.json"
+  end
+
 ######################################################################
   # Setup a Bluemix and Kubernetes environment
   ######################################################################
