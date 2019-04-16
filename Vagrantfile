@@ -99,7 +99,7 @@ Vagrant.configure("2") do |config|
       args: "--restart=always -d --name couchdb -p 5984:5984 -v /opt/couchdb/data:/opt/couchdb/data -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass"
   end
 
-  ######################################################################
+######################################################################
   # Setup a Bluemix and Kubernetes environment
   ######################################################################
   config.vm.provision "shell", inline: <<-SHELL
