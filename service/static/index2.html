@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Promotion Demo RESTful Service</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="static/stylesheets/style.css">
+  </head>
+  <body>
+      <table>
+		<tr>
+            <td style= "width:30%;">
+              <img class = "newappIcon" src="static/images/newapp-icon.png" alt="application icon">
+            </td>
+			<td>
+				<h1 id = "message">Promotion Demo REST API Service</h1>
+				<p class='description'>
+				GET <a href="/promotions" id = "get_promotions">/promotions</a> to see all the promotions.
+				<br><br>
+                GET <a href="/promotions?category=BOGO">/promotions?category=BOGO</a> to see all of the promotions in the 'BOGO' category.
+				<br><br>
+				GET /promotions/{id} retrieves a promotion from the DB using an ID.
+				<br><br>
+				PUT /promotions/{id} updates a promotion using an ID.
+				<br><br>
+				DELETE /promotions/{id} removes a promotion from the DB using an ID.
+				<br><br>
+				POST /promotions creates an new promotion.
+                <p>Example Data:</p>
+                <pre>
+    {
+        "productid": "A123",
+        "category": "BOGO",
+        "available": "Y",
+        "discount": "10"
+    }
+                </pre>
+                Try it now:
+                <form id="create_promotions" action="/promotions" method="post" enctype="application/json">
+                    <input type="hidden" name="available" value="True" />
+                    <div>
+                      <label for="productid">What is the name of the promotion?</label>
+                      <input name="productid" id="productid" value="A123">
+                    </div>
+                    <div>
+                      <label for="category">What category is the promotion?</label>
+                      <input name="category" id="category" value="BOGO">
+                    </div>
+                    <div>
+                      <label for="available">Is the promotion currently available?</label>
+
+                       <select name="available">
+                       <option value="Yes">Yes</option>
+                       <option value="No">No</option>
+                     </select>
+                    </div>
+                    <div>
+                      <label for="discount">What is the discount percent in the promotion</label>
+                      <input name="discount" id="discount" value="10">
+                    </div>
+                    <div>
+                      <button id="submit">Create Promotion</button>
+                    </div>
+                </form>
+			</td>
+		</tr>
+	</table>
+  </body>
+</html>

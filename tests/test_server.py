@@ -1,251 +1,265 @@
+# Copyright 2016, 2017 John J. Rofrano. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 Promotion API Service Test Suite
+
 Test cases can be run with the following:
-  nosetests -v --with-spec --spec-color
-  coverage report -m
-  codecov --token=$CODECOV_TOKEN
+nosetests -v --with-spec --spec-color
 """
-
-import mock
 import unittest
-import os
-import logging
-from flask_api import status    # HTTP Status Codes
-#from mock import MagicMock, patch
-from app.models import Promotion, DataValidationError, db
-from .promotion_factory import PromotionFactory
-import app.service as service
 import json
+from werkzeug.datastructures import MultiDict, ImmutableMultiDict
+from service import app
+from service.models import Promotion
 
-DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
+# Status Codes
+HTTP_200_OK = 200
+HTTP_201_CREATED = 201
+HTTP_204_NO_CONTENT = 204
+HTTP_400_BAD_REQUEST = 400
+HTTP_404_NOT_FOUND = 404
+HTTP_405_METHOD_NOT_ALLOWED = 405
+HTTP_409_CONFLICT = 409
 
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
 class TestPromotionServer(unittest.TestCase):
-    """ Promotion Server Tests """
-
-    @classmethod
-    def setUpClass(cls):
-        """ Run once before all tests """
-        service.app.debug = False
-        service.initialize_logging(logging.INFO)
-        # Set up the test database
-        service.app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
+    """ Promotion Service tests """
 
     def setUp(self):
-        """ Runs before each test """
-        service.init_db()
-        db.drop_all()    # clean up the last tests
-        db.create_all()  # create new tables
-        self.app = service.app.test_client()
-
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-
-    def _create_promotions(self, count):
-        """ Factory method to create promotions in bulk """
-        promotions = []
-        for _ in range(count):
-            test_promotion = PromotionFactory()
-            resp = self.app.post('/promotions',
-                                json=test_promotion.serialize(),
-                                content_type='application/json')
-            self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create test promotion')
-            new_promotion = resp.get_json()
-            test_promotion.id = new_promotion['id']
-            promotions.append(test_promotion)
-        return promotions
+        """ Initialize the Cloudant database """
+        self.app = app.test_client()
+        Promotion.init_db("tests")
+        Promotion.remove_all()
+        Promotion("A002", "BOGO", True, 10).save()
+        Promotion("A003", "BOGO", True, 10).save()
+        Promotion("A004", "BOGO", False, 10).save()
 
     def test_index(self):
-        """ Test the Home Page """
+        """ Test the index page """
         resp = self.app.get('/')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data['name'], 'Promotions Demo REST API Service')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        self.assertIn('Promotion Demo REST API Service', resp.data)
 
     def test_get_promotion_list(self):
-        """Get a list of Promotions"""
-        self._create_promotions(5)
+        """ Get a list of Promotions """
         resp = self.app.get('/promotions')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), 5)
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        self.assertTrue(len(resp.data) > 0)
 
     def test_get_promotion(self):
-        """ Get a single Promotion """
-        # get the id of a promotion
-        test_promotion = self._create_promotions(1)[0]
-        resp = self.app.get('/promotions/{}'.format(test_promotion.id),
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data['productid'], test_promotion.productid)
+        """ get a single Promotion """
+        promotion = self.get_promotion('BOGO')[0] # returns a list
+        resp = self.app.get('/promotions/{}'.format(promotion['_id']))
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        data = json.loads(resp.data)
+        self.assertEqual(data['productid'], 'BOGO')
 
     def test_get_promotion_not_found(self):
-        """ Get a Promotion thats not found """
+        """ Get a Promotion that doesn't exist """
         resp = self.app.get('/promotions/0')
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(resp.status_code, HTTP_404_NOT_FOUND)
+        data = json.loads(resp.data)
+        self.assertIn('was not found', data['message'])
 
     def test_create_promotion(self):
         """ Create a new Promotion """
-        test_promotion = PromotionFactory()
-        resp = self.app.post('/promotions',
-                            json=test_promotion.serialize(),
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # save the current number of promotions for later comparrison
+        promotion_count = self.get_promotion_count()
+        # add a new promotion
+        new_promotion = {'productid': 'A003', 'category': 'BOGO', 'available': True, 'discount': 10}
+        data = json.dumps(new_promotion)
+        resp = self.app.post('/promotions', data=data, content_type='application/json')
+        # if resp.status_code == 429: # rate limit exceeded
+        #     sleep(1)                # wait for 1 second and try again
+        #     resp = self.app.post('/promotions', data=data, content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_201_CREATED)
         # Make sure location header is set
         location = resp.headers.get('Location', None)
-        self.assertTrue(location != None)
+        self.assertNotEqual(location, None)
         # Check the data is correct
-        new_promotion = resp.get_json()
-        self.assertEqual(new_promotion['productid'], test_promotion.productid, "Product ID does not match")
-        self.assertEqual(new_promotion['category'], test_promotion.category, "Categories do not match")
-        self.assertEqual(new_promotion['available'], test_promotion.available, "Availability does not match")
-        self.assertEqual(new_promotion['discount'], test_promotion.discount, "Discount does not match")
-#        self.assertEqual(new_promotion['startdate'], test_promotion.startdate, "Start Date does not match")
-#        self.assertEqual(new_promotion['enddate'], test_promotion.enddate, "End Date does not match")
+        new_json = json.loads(resp.data)
+        self.assertEqual(new_json['productid'], 'A003')
+        # check that count has gone up and includes A002
+        resp = self.app.get('/promotions')
+        data = json.loads(resp.data)
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        self.assertEqual(len(data), promotion_count + 1)
+        self.assertIn(new_json, data)
 
-        # Check that the location header was correct
-        resp = self.app.get(location,
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        new_promotion = resp.get_json()
-        self.assertEqual(new_promotion['productid'], test_promotion.productid, "Product ID does not match")
-        self.assertEqual(new_promotion['category'], test_promotion.category, "Categories do not match")
-        self.assertEqual(new_promotion['available'], test_promotion.available, "Availability does not match")
-        self.assertEqual(new_promotion['discount'], test_promotion.discount, "Discount does not match")
-#        self.assertEqual(new_promotion['startdate'], test_promotion.startdate, "Start Date does not match")
-#        self.assertEqual(new_promotion['enddate'], test_promotion.enddate, "End Date does not match")
-
-    def test_cancel_promotion(self):
-        """ Cancel an existing Promotion """
-        # create a promotion to update
-        test_promotion = PromotionFactory()
-        resp = self.app.post('/promotions',
-                            json=test_promotion.serialize(),
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-        # update the promotion
-        new_promotion = resp.get_json()
-        resp = self.app.put('/promotions/{}/cancel'.format(new_promotion['id']),
-                            json=new_promotion,
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        updated_promotion = resp.get_json()
-        self.assertEqual(updated_promotion['available'], False)
+    def test_create_promotion_from_formdata(self):
+        promotion_data = MultiDict()
+        promotion_data.add('productid', 'A002')
+        promotion_data.add('category', 'BOGO')
+        promotion_data.add('available', 'True')
+        promotion_data.add('discount', '10')
+        data = ImmutableMultiDict(promotion_data)
+        resp = self.app.post('/promotions', data=data, content_type='application/x-www-form-urlencoded')
+        self.assertEqual(resp.status_code, HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get('Location', None)
+        self.assertNotEqual(location, None)
+        # Check the data is correct
+        new_json = json.loads(resp.data)
+        self.assertEqual(new_json['productid'], 'A002')
 
     def test_update_promotion(self):
-        """ Update an existing Promotion """
-        # create a promotion to update
-        test_promotion = PromotionFactory()
-        resp = self.app.post('/promotions',
-                            json=test_promotion.serialize(),
+        """ Update a Promotion """
+        promotion = self.get_promotion('BOGO')[0] # returns a list
+        self.assertEqual(promotion['category'], 'BOGO')
+        promotion['category'] = 'BOGO'
+        # make the call
+        data = json.dumps(promotion)
+        resp = self.app.put('/promotions/{}'.format(promotion['_id']), data=data,
                             content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        # go back and get it again
+        resp = self.app.get('/promotions/{}'.format(promotion['_id']), content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        new_json = json.loads(resp.data)
+        self.assertEqual(new_json['category'], 'BOGO')
 
-        # update the promotion
-        new_promotion = resp.get_json()
-        new_promotion['category'] = 'unknown'
-        resp = self.app.put('/promotions/{}'.format(new_promotion['id']),
-                            json=new_promotion,
+    def test_update_promotion_with_no_name(self):
+        """ Update a Promotion without assigning a productid """
+        promotion = self.get_promotion('A003')[0] # returns a list
+        del promotion['productid']
+        data = json.dumps(promotion)
+        resp = self.app.put('/promotions/{}'.format(promotion['_id']), data=data,
                             content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        updated_promotion = resp.get_json()
-        self.assertEqual(updated_promotion['category'], 'unknown')
+        self.assertEqual(resp.status_code, HTTP_400_BAD_REQUEST)
+
+    def test_update_promotion_not_found(self):
+        """ Update a Promotion that doesn't exist """
+        new_kitty = {"productid": "timothy", "category": "mouse"}
+        data = json.dumps(new_kitty)
+        resp = self.app.put('/promotions/0', data=data, content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_404_NOT_FOUND)
 
     def test_delete_promotion(self):
         """ Delete a Promotion """
-        test_promotion = self._create_promotions(1)[0]
-        resp = self.app.delete('/promotions/{}'.format(test_promotion.id),
-                               content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        promotion = self.get_promotion('BOGO')[0] # returns a list
+        # save the current number of promotions for later comparrison
+        promotion_count = self.get_promotion_count()
+        # delete a promotion
+        resp = self.app.delete('/promotions/{}'.format(promotion['_id']), content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_204_NO_CONTENT)
         self.assertEqual(len(resp.data), 0)
-        # make sure they are deleted
-        resp = self.app.get('/promotions/{}'.format(test_promotion.id),
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        new_count = self.get_promotion_count()
+        self.assertEqual(new_count, promotion_count - 1)
 
-    def test_query_promotion_list_by_category(self):
-        """ Query Promotions by Category """
-        promotions = self._create_promotions(10)
-        test_category = promotions[0].category
-        category_promotions = [promotion for promotion in promotions if promotion.category == test_category]
+    def test_create_promotion_with_no_name(self):
+        """ Create a Promotion without a productid """
+        new_promotion = {'category': 'BOGO', 'available': True}
+        data = json.dumps(new_promotion)
+        resp = self.app.post('/promotions', data=data, content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_400_BAD_REQUEST)
+
+    def test_create_promotion_no_content_type(self):
+        """ Create a Promotion with no Content-Type """
+        new_promotion = {'productid': 'A002', 'category': 'BOGO', 'available': True, 'discount': 10}
+        data = json.dumps(new_promotion)
+        resp = self.app.post('/promotions', data=data)
+        self.assertEqual(resp.status_code, HTTP_400_BAD_REQUEST)
+
+    def test_create_promotion_wrong_content_type(self):
+        """ Create a Promotion with wrong Content-Type """
+        data = "jimmy the fish"
+        resp = self.app.post('/promotions', data=data, content_type='plain/text')
+        self.assertEqual(resp.status_code, HTTP_400_BAD_REQUEST)
+
+    def test_call_create_with_an_id(self):
+        """ Call create passing an id """
+        new_promotion = {'productid': 'A002', 'category': 'BOGO', 'available': True, 'discount': 10}
+        data = json.dumps(new_promotion)
+        resp = self.app.post('/promotions/1', data=data)
+        self.assertEqual(resp.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_query_by_name(self):
+        """ Query Promotions by productid """
+        resp = self.app.get('/promotions', query_string='productid=A003')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        self.assertTrue(len(resp.data) > 0)
+        self.assertIn('A003', resp.data)
+        self.assertNotIn('kitty', resp.data)
+        data = json.loads(resp.data)
+        query_item = data[0]
+        self.assertEqual(query_item['productid'], 'A003')
+
+    def test_query_by_category(self):
+        """ Query Promotions by category """
+        resp = self.app.get('/promotions', query_string='category=BOGO')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        self.assertTrue(len(resp.data) > 0)
+        self.assertIn('A003', resp.data)
+        self.assertNotIn('kitty', resp.data)
+        data = json.loads(resp.data)
+        query_item = data[0]
+        self.assertEqual(query_item['category'], 'BOGO')
+
+    def test_query_by_available(self):
+        """ Query Promotions by availability """
+        resp = self.app.get('/promotions', query_string='available=true')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        self.assertTrue(len(resp.data) > 0)
+        # self.assertIn('A003', resp.data)
+        # self.assertNotIn('A004', resp.data)
+        data = json.loads(resp.data)
+        query_item = data[0]
+        self.assertEqual(query_item['available'], True)
+
+    def test_purchase_a_promotion(self):
+        """ Purchase a Promotion """
+        promotion = self.get_promotion('A003')[0] # returns a list
+        resp = self.app.put('/promotions/{}/purchase'.format(promotion['_id']), content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        resp = self.app.get('/promotions/{}'.format(promotion['_id']), content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        promotion_data = json.loads(resp.data)
+        self.assertEqual(promotion_data['available'], False)
+
+    def test_purchase_not_available(self):
+        """ Purchase a Promotion that is not available """
+        promotion = self.get_promotion('A004')[0]
+        resp = self.app.put('/promotions/{}/purchase'.format(promotion['_id']), content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_400_BAD_REQUEST)
+        resp_json = json.loads(resp.get_data())
+        self.assertIn('not available', resp_json['message'])
+
+
+######################################################################
+# Utility functions
+######################################################################
+
+    def get_promotion(self, name):
+        """ retrieves a promotion for use in other actions """
         resp = self.app.get('/promotions',
-                            query_string='category={}'.format(test_category))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(category_promotions))
-        # check the data just to be sure
-        for promotion in data:
-            self.assertEqual(promotion['category'], test_category)
+                            query_string='name={}'.format(name))
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        self.assertGreater(len(resp.data), 0)
+        self.assertIn(name, resp.data)
+        data = json.loads(resp.data)
+        return data
 
-    def test_query_promotion_list_by_availability(self):
-        """ Query Promotions by Availability """
-        promotions = self._create_promotions(10)
-        test_availability = promotions[0].available
-        available_promotions = [promotion for promotion in promotions if promotion.available == test_availability]
-        resp = self.app.get('/promotions',
-                            query_string='available={}'.format(test_availability))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(available_promotions))
-        # check the data just to be sure
-        for promotion in data:
-            self.assertEqual(promotion['available'], test_availability)
+    def get_promotion_count(self):
+        """ save the current number of promotions """
+        resp = self.app.get('/promotions')
+        self.assertEqual(resp.status_code, HTTP_200_OK)
+        data = json.loads(resp.data)
+        return len(data)
 
-    def test_query_promotion_list_by_productid(self):
-        """ Query Promotions by Product Id """
-        promotions = self._create_promotions(10)
-        test_productid = promotions[0].productid
-        productid_promotions = [promotion for promotion in promotions if promotion.productid == test_productid]
-        resp = self.app.get('/promotions',
-                            query_string='productid={}'.format(test_productid))
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(productid_promotions))
-        # check the data just to be sure
-        for promotion in data:
-            self.assertEqual(promotion['productid'], test_productid)
-
-    def test_method_not_allowed(self):
-        """ Test a sending invalid http method """
-        resp = self.app.post('/promotions/1')
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    @mock.patch('app.service.Promotion.find_by_product')
-    def test_bad_request(self, bad_request_mock):
-         """ Test a Bad Request error from Find By Product """
-         bad_request_mock.side_effect = DataValidationError()
-         resp = self.app.get('/promotions', query_string='productid=1234')
-         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
-    @mock.patch('app.service.Promotion.find_by_product')
-    def test_method_not_supported(self, method_mock):
-         """ Handles unsuppoted HTTP methods with 405_METHOD_NOT_SUPPORTED """
-         method_mock.side_effect = None
-         resp = self.app.put('/promotions', query_string='productid=1234')
-         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    @mock.patch('app.service.Promotion.find_by_product')
-    def test_mediatype_not_supported(self, media_mock):
-         """ Handles unsuppoted media requests with 415_UNSUPPORTED_MEDIA_TYPE """
-         media_mock.side_effect = DataValidationError()
-         resp = self.app.post('/promotions', query_string='productid=1234', content_type='application/pdf')
-         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-
-    @mock.patch('app.service.Promotion.find_by_product')
-    def test_search_bad_data(self, inventory_find_mock):
-        """ Test a search that returns bad data """
-        inventory_find_mock.return_value = None
-        resp = self.app.get('/promotions', query_string='productid=1234')
-        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ######################################################################
 #   M A I N
