@@ -26,9 +26,15 @@ discount (float) - the amount of the promotional discount (for percentage will b
 startdate (datetime) - starting date of promotion
 enddate (datetime) - ending date of promotion
 """
+import os
+import json
 import logging
-from flask_sqlalchemy import SQLAlchemy
+from retry import retry
+from cloudant.client import Cloudant
+from cloudant.query import Query
+from requests import HTTPError, ConnectionError
 from datetime import datetime
+
 
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
