@@ -19,5 +19,5 @@ if __name__ == "__main__":
     print " P R O M O T I O N   S E R V I C E   R U N N I N G"
     print "*****************************************************"
     service.initialize_logging()
-    service.init_db()  # make our sqlalchemy tables
+    service.init_db()  # make our cloudant tables
     app.run(host='0.0.0.0', port=int(PORT), debug=DEBUG)
