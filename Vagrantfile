@@ -54,26 +54,26 @@ Vagrant.configure(2) do |config|
     apt-get install -y git zip tree python-pip python-dev
     apt-get -y autoremove
     pip install --upgrade pip
+
+    # Install PhantomJS for Selenium browser support
+    echo "\n***********************************"
+    echo " Installing PhantomJS for Selenium"
+    echo "***********************************\n"
+    sudo apt-get install -y chrpath libssl-dev libxft-dev
+    # PhantomJS https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
+    cd ~
+    #export PHANTOM_JS="phantomjs-1.9.7-linux-x86_64"
+    export PHANTOM_JS="phantomjs-2.1.1-linux-x86_64"
+    wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2
+    sudo tar xvjf $PHANTOM_JS.tar.bz2
+    sudo mv $PHANTOM_JS /usr/local/share
+    sudo ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
+    rm -f $PHANTOM_JS.tar.bz2
+
     # Install app dependencies
     cd /vagrant
     sudo pip install -r requirements.txt
   SHELL
-
-  ######################################################################
-  # Add CouchDB docker container
-  ######################################################################
-  config.vm.provision "shell", inline: <<-SHELL
-    sudo mkdir -p /opt/couchdb/data
-    sudo chown vagrant:vagrant /opt/couchdb/data
-  SHELL
-
-  # Add CouchDB docker container
-  # docker run -d --name couchdb -p 5984:5984 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass couchdb
-  config.vm.provision "docker" do |d|
-    d.pull_images "couchdb"
-    d.run "couchdb",
-      args: "--restart=always -d --name couchdb -p 5984:5984 -v /opt/couchdb/data:/opt/couchdb/data -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass"
-  end
 
   ######################################################################
   # Add CouchDB docker container
