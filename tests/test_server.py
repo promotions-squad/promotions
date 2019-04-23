@@ -219,25 +219,24 @@ class TestPromotionServer(unittest.TestCase):
         data = json.loads(resp.data)
         query_item = data[0]
         self.assertEqual(query_item['available'], True)
-    """
-    def test_purchase_a_promotion(self):
-    Purchase a Promotion
+    
+    def test_cancel_a_promotion(self):
+        """Cancel a Promotion"""
         promotion = self.get_promotion('A001')[0] # returns a list
-        resp = self.app.put('/promotions/{}/purchase'.format(promotion['_id']), content_type='application/json')
+        resp = self.app.put('/promotions/{}/cancel'.format(promotion['_id']), content_type='application/json')
         self.assertEqual(resp.status_code, HTTP_200_OK)
         resp = self.app.get('/promotions/{}'.format(promotion['_id']), content_type='application/json')
         self.assertEqual(resp.status_code, HTTP_200_OK)
         promotion_data = json.loads(resp.data)
         self.assertEqual(promotion_data['available'], False)
 
-    def test_purchase_not_available(self):
-        Purchase a Promotion that is not available
-        promotion = self.get_promotion('A003')[0]
-        resp = self.app.put('/promotions/{}/purchase'.format(promotion['_id']), content_type='application/json')
-        self.assertEqual(resp.status_code, HTTP_400_BAD_REQUEST)
+    def test_cancel_not_available(self):
+        """Cancel a Promotion that does not exist"""
+        resp = self.app.put('/promotions/00/cancel', content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_404_NOT_FOUND)
         resp_json = json.loads(resp.get_data())
-        self.assertIn('not available', resp_json['message'])
-     """
+        self.assertIn('not found', resp_json['message'])
+     
 
 ######################################################################
 # Utility functions
