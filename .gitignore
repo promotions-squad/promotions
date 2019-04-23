@@ -108,3 +108,9 @@ venv.bak/
 
 #SQLAlchemy stuff
 *.db
+
+#Python
+.pyc
+
+#Vagrant folder
+.vagrant/
