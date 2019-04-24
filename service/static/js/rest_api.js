@@ -6,21 +6,23 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#pet_id").val(res.id);
-        $("#pet_name").val(res.name);
-        $("#pet_category").val(res.category);
+        $("#promotion_id").val(res.id);
+        $("#promotion_productid").val(res.productid);
+        $("#promotion_category").val(res.category);
         if (res.available == true) {
-            $("#pet_available").val("true");
+            $("#promotion_available").val("true");
         } else {
-            $("#pet_available").val("false");
+            $("#promotion_available").val("false");
         }
+        $("#promotion_discount").val(res.discount);
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_name").val("");
-        $("#pet_category").val("");
-        $("#pet_available").val("");
+        $("#promotion_productid").val("");
+        $("#promotion_category").val("");
+        $("#promotion_available").val("");
+        $("#promotion_discount").val("");
     }
 
     // Updates the flash message area
@@ -30,24 +32,26 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Pet
+    // Create a Promotion
     // ****************************************
 
     $("#create-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var productid = $("#promotion_productid").val();
+        var category = $("#promotion_category").val();
+        var available = $("#promotion_available").val() == "true";
+        var discount = $("#promotion_discount").val();
 
         var data = {
-            "name": name,
+            "productid": productid,
             "category": category,
-            "available": available
+            "available": available,
+            "discount": discount
         };
 
         var ajax = $.ajax({
             type: "POST",
-            url: "/pets",
+            url: "/promotions",
             contentType:"application/json",
             data: JSON.stringify(data),
         });
@@ -64,25 +68,27 @@ $(function () {
 
 
     // ****************************************
-    // Update a Pet
+    // Update a Promotion
     // ****************************************
 
     $("#update-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var promotion_id = $("#promotion_id").val();
+        var productid = $("#promotion_productid").val();
+        var category = $("#promotion_category").val();
+        var available = $("#promotion_available").val() == "true";
+        var discount = $("#promotion_discount").val();
 
         var data = {
-            "name": name,
+            "productid": productid,
             "category": category,
             "available": available
+            "discount": discount
         };
 
         var ajax = $.ajax({
                 type: "PUT",
-                url: "/pets/" + pet_id,
+                url: "/promotions/" + promotion_id,
                 contentType:"application/json",
                 data: JSON.stringify(data)
             })
@@ -99,16 +105,16 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Pet
+    // Retrieve a Promotion
     // ****************************************
 
     $("#retrieve-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
+        var promotion_id = $("#promotion_id").val();
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets/" + pet_id,
+            url: "/promotions/" + promotion_id,
             contentType:"application/json",
             data: ''
         })
@@ -127,23 +133,23 @@ $(function () {
     });
 
     // ****************************************
-    // Delete a Pet
+    // Delete a Promotion
     // ****************************************
 
     $("#delete-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
+        var promotion_id = $("#promotion_id").val();
 
         var ajax = $.ajax({
             type: "DELETE",
-            url: "/pets/" + pet_id,
+            url: "/promotions/" + promotion_id,
             contentType:"application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Pet with ID [" + res.id + "] has been Deleted!")
+            flash_message("Promotion with ID [" + res.id + "] has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -156,24 +162,25 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#pet_id").val("");
+        $("#promotion_id").val("");
         clear_form_data()
     });
 
     // ****************************************
-    // Search for a Pet
+    // Search for a Promotion
     // ****************************************
 
     $("#search-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var productid = $("#promotion_productid").val();
+        var category = $("#promotion_category").val();
+        var available = $("#promotion_available").val() == "true";
+        var discount = $("#promotion_discount").val();
 
         var queryString = ""
 
-        if (name) {
-            queryString += 'name=' + name
+        if (productid) {
+            queryString += 'productid=' + productid
         }
         if (category) {
             if (queryString.length > 0) {
@@ -189,10 +196,17 @@ $(function () {
                 queryString += 'available=' + available
             }
         }
+        if (discount) {
+            if (queryString.length > 0) {
+                queryString += '&discount=' + discount
+            } else {
+                queryString += 'discount=' + discount
+            }
+        }
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets?" + queryString,
+            url: "/promotions?" + queryString,
             contentType:"application/json",
             data: ''
         })
@@ -203,13 +217,14 @@ $(function () {
             $("#search_results").append('<table class="table-striped">');
             var header = '<tr>'
             header += '<th style="width:10%">ID</th>'
-            header += '<th style="width:40%">Name</th>'
+            header += '<th style="width:40%">ProductID</th>'
             header += '<th style="width:40%">Category</th>'
             header += '<th style="width:10%">Available</th></tr>'
+            header += '<th style="width:40%">Discount</th>'
             $("#search_results").append(header);
             for(var i = 0; i < res.length; i++) {
-                var pet = res[i];
-                var row = "<tr><td>"+pet.id+"</td><td>"+pet.name+"</td><td>"+pet.category+"</td><td>"+pet.available+"</td></tr>";
+                var promotion = res[i];
+                var row = "<tr><td>"+promotion.id+"</td><td>"+promotion.productid+"</td><td>"+promotion.category+"</td><td>"+promotion.available+"</td><td>"+promotion.discount+"</td></tr>";
                 $("#search_results").append(row);
             }
 

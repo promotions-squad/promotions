@@ -62,7 +62,7 @@ class TestPromotionServer(unittest.TestCase):
 
     def test_get_promotion(self):
         """ get a single Promotion """
-        promotion = self.get_promotion('A002')[1] # returns a list
+        promotion = self.get_promotion('A002')[0] # returns a list
         resp = self.app.get('/promotions/{}'.format(promotion['_id']))
         self.assertEqual(resp.status_code, HTTP_200_OK)
         data = json.loads(resp.data)
@@ -118,7 +118,7 @@ class TestPromotionServer(unittest.TestCase):
 
     def test_update_promotion(self):
         """ Update a Promotion """
-        promotion = self.get_promotion('A002')[1] # returns a list
+        promotion = self.get_promotion('A002')[0] # returns a list
         self.assertEqual(promotion['category'], 'B2GO')
         promotion['category'] = 'B3GO'
         # make the call
