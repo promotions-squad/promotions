@@ -8,15 +8,15 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/xenial64"
 
-  # Forward Flask and Kubernetes ports
-  config.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
+  # Forward Flasks ports
+  #config.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
   config.vm.network "forwarded_port", guest: 5000, host: 5000, host_ip: "127.0.0.1"
   config.vm.network "private_network", ip: "192.168.33.10"
 
   # Provider-specific configuration
   config.vm.provider "virtualbox" do |vb|
     # Customize the amount of memory on the VM:
-    vb.memory = "1024"
+    vb.memory = "512"
     vb.cpus = 1
     # Fixes some DNS issues on some networks
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -76,20 +76,20 @@ Vagrant.configure(2) do |config|
   SHELL
 
   ######################################################################
-  # Add CouchDB docker container
+  # Add CouchDB docker container (not used for BDD)
   ######################################################################
-  config.vm.provision "shell", inline: <<-SHELL
-    sudo mkdir -p /opt/couchdb/data
-    sudo chown vagrant:vagrant /opt/couchdb/data
-  SHELL
+#  config.vm.provision "shell", inline: <<-SHELL
+#    sudo mkdir -p /opt/couchdb/data
+#    sudo chown vagrant:vagrant /opt/couchdb/data
+#  SHELL
 
   # Add CouchDB docker container
   # docker run -d --name couchdb -p 5984:5984 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass couchdb
-  config.vm.provision "docker" do |d|
-    d.pull_images "couchdb"
-    d.run "couchdb",
-      args: "--restart=always -d --name couchdb -p 5984:5984 -v /opt/couchdb/data:/opt/couchdb/data -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass"
-  end
+#  config.vm.provision "docker" do |d|
+#    d.pull_images "couchdb"
+#    d.run "couchdb",
+#      args: "--restart=always -d --name couchdb -p 5984:5984 -v /opt/couchdb/data:/opt/couchdb/data -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass"
+#  end
 
 ######################################################################
   # Setup a Bluemix and Kubernetes environment
@@ -109,10 +109,15 @@ Vagrant.configure(2) do |config|
     echo "\n"
     echo "ibmcloud login -a https://api.ng.bluemix.net --apikey @~/.bluemix/apiKey.json"
     echo "\n"
-    echo "\n************************************"
-    echo " For the Kubernetes Dashboard use:"
-    echo " kubectl proxy --address='0.0.0.0'"
-    echo "************************************\n"
   SHELL
+
+  ######################################################################
+  # Add Redis docker container
+  ######################################################################
+  config.vm.provision "docker" do |d|
+    d.pull_images "redis:alpine"
+    d.run "redis:alpine",
+      args: "--restart=always -d --name redis -h redis -p 6379:6379 -v redis_data:/data"
+  end
 
 end

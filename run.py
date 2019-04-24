@@ -5,7 +5,7 @@ Start the Promotion Service and initializes logging
 """
 
 import os
-from app import app, service
+from app import app, server
 
 # Pull options from environment
 DEBUG = (os.getenv('DEBUG', 'False') == 'True')
@@ -18,6 +18,5 @@ if __name__ == "__main__":
     print "*****************************************************"
     print " P R O M O T I O N   S E R V I C E   R U N N I N G"
     print "*****************************************************"
-    service.initialize_logging()
-    service.init_db()  # make our cloudant tables
+    server.initialize_logging()
     app.run(host='0.0.0.0', port=int(PORT), debug=DEBUG)
