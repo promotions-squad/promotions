@@ -149,7 +149,7 @@ $(function () {
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Promotion with ID [" + res.id + "] has been Deleted!")
+            flash_message("Promotion Deleted!")
         });
 
         ajax.fail(function(res){
