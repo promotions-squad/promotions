@@ -22,20 +22,20 @@
      And I press the "Create" button
      Then I should see the message "Success"
 
-# Scenario: List all pets
-#     When I visit the "Home Page"
-#     And I press the "Search" button
-#     Then I should see "fido" in the results
-#     And I should see "kitty" in the results
-#     And I should see "leo" in the results
+ Scenario: List all promotions
+     When I visit the "Home Page"
+     And I press the "Search" button
+     Then I should see "495" in the results
+     And I should see "398" in the results
+     And I should see "492" in the results
 
-# Scenario: List all dogs
-#     When I visit the "Home Page"
-#     And I set the "Category" to "dog"
-#     And I press the "Search" button
-#     Then I should see "fido" in the results
-#     And I should not see "kitty" in the results
-#     And I should not see "leo" in the results
+ Scenario: List all two
+     When I visit the "Home Page"
+     And I set the "Category" to "two"
+     And I press the "Search" button
+     Then I should see "495" in the results
+     And I should not see "398" in the results
+     And I should not see "492" in the results
 
 # Scenario: Update a Pet
 #     When I visit the "Home Page"
