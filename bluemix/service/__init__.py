@@ -23,12 +23,12 @@ api = Api(app)
 from service.resources import PromotionResource
 from service.resources import PromotionCollection
 from service.resources import HomePage
-#from service.resources import PurchaseAction
+from service.resources import CancelAction
 
 api.add_resource(HomePage, '/')
 api.add_resource(PromotionCollection, '/promotions')
 api.add_resource(PromotionResource, '/promotions/<promotion_id>')
-# api.add_resource(PurchaseAction, '/promotions/<promotion_id>/purchase')
+api.add_resource(CancelAction, '/promotions/<promotion_id>/cancel')
 
 # Set up logging for production
 print('Setting up logging for {}...'.format(__name__))

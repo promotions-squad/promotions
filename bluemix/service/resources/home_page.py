@@ -11,9 +11,9 @@ class HomePage(Resource):
     """ Resource fior the Home Page """
     def get(self):
         """ Returns the index page """
-        return app.send_static_file('index2.html')
+        return app.send_static_file('index.html')
 
-# @app.route('/')
+#@app.route('/')
 # def index():
 #     """ Send back the home page """
 #     return app.send_static_file('index.html')
