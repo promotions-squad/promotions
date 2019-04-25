@@ -14,22 +14,23 @@ from selenium.webdriver.support import expected_conditions
 
 WAIT_SECONDS = int(getenv('WAIT_SECONDS', '30'))
 
-#@given('the following pets')
-#def step_impl(context):
-#    """ Delete all Pets and load new ones """
-#    headers = {'Content-Type': 'application/json'}
-#    context.resp = requests.delete(context.base_url + '/pets/reset', headers=headers)
-#    expect(context.resp.status_code).to_equal(204)
-#    create_url = context.base_url + '/pets'
-#    for row in context.table:
-#        data = {
-#            "name": row['name'],
-#            "category": row['category'],
-#            "available": row['available'] in ['True', 'true', '1']
-#            }
-#        payload = json.dumps(data)
-#        context.resp = requests.post(create_url, data=payload, headers=headers)
-#        expect(context.resp.status_code).to_equal(201)
+@given('the following promotions')
+def step_impl(context):
+    """ Delete all Promotions and load new ones """
+    headers = {'Content-Type': 'application/json'}
+    context.resp = requests.delete(context.base_url + '/promotions/reset', headers=headers)
+    expect(context.resp.status_code).to_equal(204)
+    create_url = context.base_url + '/promotions'
+    for row in context.table:
+        data = {
+            "productid": row['productid'],
+            "category": row['category'],
+            "available": row['available'] in ['True', 'true', '1'],
+            "discount": row['discount']
+            }
+        payload = json.dumps(data)
+        context.resp = requests.post(create_url, data=payload, headers=headers)
+        expect(context.resp.status_code).to_equal(201)
 
 @when('I visit the "home page"')
 def step_impl(context):
