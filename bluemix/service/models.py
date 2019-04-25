@@ -229,6 +229,12 @@ class Promotion(object):
         """ Query that finds Promotions by their availability """
         return cls.find_by(available=available)
 
+    @classmethod
+    @retry(HTTPError, delay=1, backoff=2, tries=5)
+    def find_by_discount(cls, discount):
+        """ Query that finds Promotions by their category """
+        return cls.find_by(discount=discount)
+
 ############################################################
 #  C L O U D A N T   D A T A B A S E   C O N N E C T I O N
 ############################################################

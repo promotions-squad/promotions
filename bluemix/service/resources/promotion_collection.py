@@ -17,18 +17,22 @@ class PromotionCollection(Resource):
         app.logger.info('Request to list Promotions...')
         promotions = []
         category = request.args.get('category')
-        name = request.args.get('name')
+        productid = request.args.get('productid')
         available = request.args.get('available')
+        discount = request.args.get('discount')
         if category:
             app.logger.info('Filtering by category: %s', category)
             promotions = Promotion.find_by_category(category)
-        elif name:
-            app.logger.info('Filtering by name:%s', name)
-            promotions = Promotion.find_by_name(name)
+        elif productid:
+            app.logger.info('Filtering by productid:%s', productid)
+            promotions = Promotion.find_by_productid(productid)
         elif available:
             app.logger.info('Filtering by available: %s', available)
             is_available = available.lower() in ['yes', 'y', 'true', 't', '1']
             promotions = Promotion.find_by_availability(is_available)
+        elif discount:
+            app.logger.info('Filtering by discount:%s', discount)
+            promotions = Promotion.find_by_discount(discount)
         else:
             promotions = Promotion.all()
 
