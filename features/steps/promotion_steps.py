@@ -70,8 +70,8 @@ def step_impl(context, button):
 
 @then('I should see "{name}" in the results')
 def step_impl(context, name):
-#    element = context.driver.find_element_by_id('search_results')
-#    expect(element.text).to_contain(name)
+    element = context.driver.find_element_by_id('search_results')
+    expect(element.text).to_contain(name)
      found = WebDriverWait(context.driver, WAIT_SECONDS).until(
          expected_conditions.text_to_be_present_in_element(
              (By.ID, 'search_results'),
@@ -88,8 +88,8 @@ def step_impl(context, name):
 
 @then('I should see the message "{message}"')
 def step_impl(context, message):
-#    element = context.driver.find_element_by_id('flash_message')
-#    expect(element.text).to_contain(message)
+    element = context.driver.find_element_by_id('flash_message')
+    expect(element.text).to_contain(message)
      found = WebDriverWait(context.driver, WAIT_SECONDS).until(
          expected_conditions.text_to_be_present_in_element(
              (By.ID, 'flash_message'),
