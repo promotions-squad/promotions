@@ -16,9 +16,9 @@ class PromotionResource(Resource):
     PromotionResource class
 
     Allows the manipulation of a single Promotion
-    GET /promotion{id} - Returns a Promotion with the id
-    PUT /promotion{id} - Update a Promotion with the id
-    DELETE /promotion{id} -  Deletes a Promotion with the id
+    GET /promotions/{id} - Returns a Promotion with the id
+    PUT /promotions/{id} - Update a Promotion with the id
+    DELETE /promotions/{id} -  Deletes a Promotion with the id
     """
 
     def get(self, promotion_id):
