@@ -3,12 +3,12 @@
      I need a RESTful catalog service
      So that I can keep track of all my promotions
 
-# Background:
-#    Given the following promotions
-#         | id | productid  | category | available | discount |
-#         |  1 | 495        | two      | True      | 2        |
-#         |  2 | 398        | three    | True      | 3        |
-#         |  3 | 492        | four     | True      | 4        |
+ Background:
+    Given the following promotions
+         | id | productid  | category | available | discount |
+         |  1 | 495        | two      | True      | 2        |
+         |  2 | 398        | three    | True      | 3        |
+         |  3 | 492        | four     | True      | 4        |
 
  Scenario: The server is running
      When I visit the "Home Page"
