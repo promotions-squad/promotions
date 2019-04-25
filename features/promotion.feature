@@ -1,26 +1,26 @@
-# Feature: The pet store service back-end
-#     As a Pet Store Owner
-#     I need a RESTful catalog service
-#     So that I can keep track of all my pets
+ Feature: The promotions service back-end
+     As a Store Owner
+     I need a RESTful catalog service
+     So that I can keep track of all my promotions
 
-# Background:
-#     Given the following pets
-#         | id | name       | category | available |
-#         |  1 | fido       | dog      | True      |
-#         |  2 | kitty      | cat      | True      |
-#         |  3 | leo        | lion     | True      |
+ Background:
+    Given the following promotions
+         | id | productid  | category | available | discount |
+         |  1 | 495        | two      | True      | 2        |
+         |  2 | 398        | three    | True      | 3        |
+         |  3 | 492        | four     | True      | 4        |
 
-# Scenario: The server is running
-#     When I visit the "Home Page"
-#     Then I should see "Pet Demo RESTful Service" in the title
-#     And I should not see "404 Not Found"
+ Scenario: The server is running
+     When I visit the "Home Page"
+     Then I should see "Promotion Demo REST API Service" in the title
+     And I should not see "404 Not Found"
 
-# Scenario: Create a Pet
-#     When I visit the "Home Page"
-#     And I set the "Name" to "Happy"
-#     And I set the "Category" to "Hippo"
-#     And I press the "Create" button
-#     Then I should see the message "Success"
+ Scenario: Create a Promotion
+     When I visit the "Home Page"
+     And I set the "productid" to "496"
+     And I set the "category" to "three"
+     And I press the "Create" button
+     Then I should see the message "Success"
 
 # Scenario: List all pets
 #     When I visit the "Home Page"
