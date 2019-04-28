@@ -5,10 +5,10 @@
 
  Background:
     Given the following promotions
-         | id | productid  | category | available |
-         |  1 | 495        | two      | True      |
-         |  2 | 398        | three    | True      |
-         |  3 | 492        | four     | True      |
+         | id | productid  | category | available | discount |
+         |  1 | 495        | two      | True      | 2        |
+         |  2 | 398        | three    | True      | 3        |
+         |  3 | 492        | four     | True      | 4        |
 
  Scenario: The server is running
      When I visit the "Home Page"
@@ -43,7 +43,6 @@
      And I press the "Retrieve" button
      Then I should see "495" in the "productid" field
      Then I should see "two" in the "category" field
-     Then I should see "True" in the "available" field
      Then I should see "2" in the "discount" field
 
 
