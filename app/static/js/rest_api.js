@@ -81,6 +81,7 @@ $(function () {
             $("#promotion_available").val("true");
         } else {
             $("#promotion_available").val("false");
+        }
         var discount = $("#promotion_discount").val();
 
         var data = {
