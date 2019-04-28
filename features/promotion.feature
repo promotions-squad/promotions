@@ -43,7 +43,6 @@
      And I press the "Retrieve" button
      Then I should see "495" in the "productid" field
      Then I should see "two" in the "category" field
-     Then I should see "True" in the "available" field
      Then I should see "2" in the "discount" field
 
 
