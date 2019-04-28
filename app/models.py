@@ -210,17 +210,17 @@ class Promotion(object):
         ----------
           redis.ConnectionError - if ping() test fails
         """
-        if redis:
-            Promotion.logger.info("Using client connection...")
-            Promotion.redis = redis
-            try:
-                Promotion.redis.ping()
-                Promotion.logger.info("Connection established")
-            except ConnectionError:
-                Promotion.logger.error("Client Connection Error!")
-                Promotion.redis = None
-                raise ConnectionError('Could not connect to the Redis Service')
-            return
+#        if redis:
+#            Promotion.logger.info("Using client connection...")
+#            Promotion.redis = redis
+#            try:
+#                Promotion.redis.ping()
+#                Promotion.logger.info("Connection established")
+#            except ConnectionError:
+#                Promotion.logger.error("Client Connection Error!")
+#                Promotion.redis = None
+#                raise ConnectionError('Could not connect to the Redis Service')
+#            return
         # Get the credentials from the Bluemix environment
         if 'VCAP_SERVICES' in os.environ:
             Promotion.logger.info("Using VCAP_SERVICES...")
