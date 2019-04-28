@@ -128,12 +128,12 @@ def step_impl(context, element_name, text_string):
     element.clear()
     element.send_keys(text_string)
 
-@when('I change "{key}" to "{value}"')
-def step_impl(context, key, value):
-     context.data[key] = value
+# @when('I change "{key}" to "{value}"')
+# def step_impl(context, key, value):
+#     context.data[key] = value
 
-@then('I should see "{message}" in "{field}"')
-def step_impl(context, message, field):
+# @then('I should see "{message}" in "{field}"')
+# def step_impl(context, message, field):
     """ Check a field for text """
 #     element = context.driver.find_element_by_id(field)
-assert message in element.text
+# assert message in element.text
