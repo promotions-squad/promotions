@@ -164,7 +164,7 @@ def delete_promotions(promotion_id):
 # CANCEL A PROMOTION
 ######################################################################
 @app.route('/promotions/<int:promotion_id>/cancel', methods=['PUT'])
-def purchase_promotions(promotion_id):
+def cancel_promotions(promotion_id):
     """ Purchasing a Promotion makes it unavailable """
     promotion = Promotion.find(promotion_id)
     if not promotion:

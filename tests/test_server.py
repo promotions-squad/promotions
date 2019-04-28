@@ -186,6 +186,10 @@ class TestPromotionServer(unittest.TestCase):
         resp_json = json.loads(resp.get_data())
         self.assertIn('not found', resp_json['message'])
 
+    def test_reset_promotion_data(self):
+        resp = self.app.delete('/promotions/reset',content_type='application/json')
+        self.assertEqual(resp.status_code, HTTP_204_NO_CONTENT)
+
 
 ######################################################################
 # Utility functions
