@@ -136,4 +136,4 @@ def step_impl(context, key, value):
 def step_impl(context, message, field):
     """ Check a field for text """
 #     element = context.driver.find_element_by_id(field)
-     assert message in element.text
+assert message in element.text
