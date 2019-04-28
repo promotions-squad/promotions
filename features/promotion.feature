@@ -6,9 +6,9 @@
  Background:
     Given the following promotions
          | id | productid  | category | available | discount |
-         |  1 | 495        | two      | True      |          |
-         |  2 | 398        | three    | True      |          |
-         |  3 | 492        | four     | True      |          |
+         |  1 | 495        | two      | true      |    2     |
+         |  2 | 398        | three    | true      |    3     |
+         |  3 | 492        | four     | true      |    4     |
 
  Scenario: The server is running
      When I visit the "Home Page"
@@ -37,7 +37,7 @@
      And I should not see "398" in the results
      And I should not see "492" in the results
 
- Scenario: Update a Pet
+ Scenario: Update a Promotion
      When I visit the "Home Page"
      And I set the "Id" to "1"
      And I press the "Retrieve" button
