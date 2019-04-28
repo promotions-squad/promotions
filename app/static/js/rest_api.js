@@ -219,8 +219,8 @@ $(function () {
             header += '<th style="width:10%">ID</th>'
             header += '<th style="width:40%">ProductID</th>'
             header += '<th style="width:40%">Category</th>'
-            header += '<th style="width:10%">Available</th></tr>'
-            header += '<th style="width:40%">Discount</th>'
+            header += '<th style="width:10%">Available</th>'
+            header += '<th style="width:40%">Discount</th></tr>'
             $("#search_results").append(header);
             for(var i = 0; i < res.length; i++) {
                 var promotion = res[i];
