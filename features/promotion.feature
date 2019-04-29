@@ -53,18 +53,8 @@
 #     Then I should see "Boxer" in the results
 #     Then I should not see "fido" in the results
 
-  Scenario: Delete a Promotion
+Scenario: Delete a Promotion
       When I visit the "Home Page"
-      And I set the "productid" to "495"
-      And I press the "Search" button
-      Then I should see the message "Success"
-      And I should see "two" in the results
-      When I copy the "id" field
-      And I press the "Clear" button
-      And I paste the "Id" field
-      When I press the "Delete" button
-      And I set the "productid" to "495"
-      And I press the Search button
-      Then I should not see "495" in the "productid" field
-      And I should not see "two" in the "Category" field
-      And the "id" field should be empty
+      And I set the "id" to "3"
+      And I press the "delete" promotion button
+      Then I should see the message "Promotion Deleted!"
