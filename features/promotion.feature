@@ -67,4 +67,4 @@ Scenario: Delete a Promotion
       When I visit the "Home Page"
       And I set the "Id" to "3"
       And I press the "Delete" button
-      Then I should see the message "Order Deleted!"
+      Then I should not see "492" in the "productid" field
