@@ -67,4 +67,8 @@ Scenario: Delete a Promotion
       When I visit the "Home Page"
       And I set the "Id" to "3"
       And I press the "Delete" button
-      Then I should not see "492" in the "productid" field
+      When I visit the "Home Page"
+      And I press the "Search" button
+      Then I should see "495" in the results
+      And I should see "398" in the results
+      And I should not see "492" in the results
