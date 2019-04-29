@@ -38,15 +38,22 @@
      And I should not see "492" in the results
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  Scenario: Update a Promotion
 =======
  Scenario: Read a Promotion
 >>>>>>> master
+=======
+ Scenario: Update a Promotion
+>>>>>>> 783af2ba985cd62c3ba23acc4bb98aaf12805cf9
      When I visit the "Home Page"
      And I set the "Id" to "1"
      And I press the "Retrieve" button
      Then I should see "495" in the "productid" field
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 783af2ba985cd62c3ba23acc4bb98aaf12805cf9
      When I change "productid" to "300"
      And I press the "Update" button
      Then I should see the message "Success"
@@ -57,6 +64,7 @@
      And I press the "Search" button
      Then I should see "300" in the results
      Then I should not see "495" in the results
+<<<<<<< HEAD
 =======
      Then I should see "two" in the "category" field
      Then I should see "2" in the "discount" field
@@ -78,3 +86,14 @@
 #     Then I should see "300" in the results
 #     Then I should not see "495" in the results
 >>>>>>> master
+=======
+     
+ Scenario: Read a Promotion
+     When I visit the "Home Page"
+     And I set the "Id" to "1"
+     And I press the "Retrieve" button
+     Then I should see "495" in the "productid" field
+     Then I should see "two" in the "category" field
+     Then I should see "2" in the "discount" field
+     
+>>>>>>> 783af2ba985cd62c3ba23acc4bb98aaf12805cf9
