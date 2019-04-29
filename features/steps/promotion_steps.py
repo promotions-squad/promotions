@@ -107,10 +107,17 @@ def step_impl(context, message):
 
 @then('I should see "{text_string}" in the "{element_name}" field')
 def step_impl(context, text_string, element_name):
+<<<<<<< HEAD
     element_id = 'promotion_' + element_name.lower()
 #   element = context.driver.find_element_by_id(element_id)
 #   expect(element.get_attribute('value')).to_equal(text_string)     
     found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+=======
+     element_id = 'promotion_' + element_name.lower()
+#    element = context.driver.find_element_by_id(element_id)
+#    expect(element.get_attribute('value')).to_equal(text_string)
+     found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+>>>>>>> master
          expected_conditions.text_to_be_present_in_element_value(
             (By.ID, element_id),
             text_string

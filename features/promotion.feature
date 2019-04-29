@@ -37,11 +37,16 @@
      And I should not see "398" in the results
      And I should not see "492" in the results
 
+<<<<<<< HEAD
  Scenario: Update a Promotion
+=======
+ Scenario: Read a Promotion
+>>>>>>> master
      When I visit the "Home Page"
      And I set the "Id" to "1"
      And I press the "Retrieve" button
      Then I should see "495" in the "productid" field
+<<<<<<< HEAD
      When I change "productid" to "300"
      And I press the "Update" button
      Then I should see the message "Success"
@@ -52,3 +57,24 @@
      And I press the "Search" button
      Then I should see "300" in the results
      Then I should not see "495" in the results
+=======
+     Then I should see "two" in the "category" field
+     Then I should see "2" in the "discount" field
+
+
+# Scenario: Update a Promotion
+#     When I visit the "Home Page"
+#     And I set the "Id" to "1"
+#     And I press the "Retrieve" button
+#     Then I should see "495" in the "productid" field
+#     When I set "productid" to "300"
+#     And I press the "Update" button
+#     Then I should see the message "Success"
+#     When I set the "Id" to "1"
+#     And I press the "Retrieve" button
+#     Then I should see "300" in the "productid" field
+#     When I press the "Clear" button
+#     And I press the "Search" button
+#     Then I should see "300" in the results
+#     Then I should not see "495" in the results
+>>>>>>> master
