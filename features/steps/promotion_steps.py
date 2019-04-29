@@ -70,15 +70,15 @@ def step_impl(context, button):
 
 @then('I should see "{name}" in the results')
 def step_impl(context, name):
-#    element = context.driver.find_element_by_id('search_results')
-#    expect(element.text).to_contain(name)
-     found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+#   element = context.driver.find_element_by_id('search_results')
+#   expect(element.text).to_contain(name)
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
          expected_conditions.text_to_be_present_in_element(
              (By.ID, 'search_results'),
-             name
+            name
          )
-     )
-     expect(found).to_be(True)
+    )
+    expect(found).to_be(True)
 
 @then('I should not see "{name}" in the results')
 def step_impl(context, name):
@@ -88,15 +88,15 @@ def step_impl(context, name):
 
 @then('I should see the message "{message}"')
 def step_impl(context, message):
-#    element = context.driver.find_element_by_id('flash_message')
-#    expect(element.text).to_contain(message)
-     found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+#   element = context.driver.find_element_by_id('flash_message')
+#   expect(element.text).to_contain(message)
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
          expected_conditions.text_to_be_present_in_element(
              (By.ID, 'flash_message'),
              message
-         )
-     )
-     expect(found).to_be(True)
+      )
+    )
+    expect(found).to_be(True)
 
 ##################################################################
 # This code works because of the following naming convention:
@@ -118,22 +118,22 @@ def step_impl(context, text_string, element_name):
      )
      expect(found).to_be(True)
 
-#@when('I change "{element_name}" to "{text_string}"')
-#def step_impl(context, element_name, text_string):
-#    element_id = 'pet_' + element_name.lower()
-#    element = context.driver.find_element_by_id(element_id)
-#    # element = WebDriverWait(context.driver, WAIT_SECONDS).until(
-#    #     expected_conditions.presence_of_element_located((By.ID, element_id))
-#    # )
-#    element.clear()
-#    element.send_keys(text_string)
+@when('I change "{element_name}" to "{text_string}"')
+def step_impl(context, element_name, text_string):
+    element_id = 'promotion_' + element_name.lower()
+#   element = context.driver.find_element_by_id(element_id)
+    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    element.clear()
+    element.send_keys(text_string)
 
-## @when('I change "{key}" to "{value}"')
-## def step_impl(context, key, value):
-##     context.data[key] = value
+# @when('I change "{key}" to "{value}"')
+# def step_impl(context, key, value):
+#     context.data[key] = value
 
-## @then('I should see "{message}" in "{field}"')
-## def step_impl(context, message, field):
-##     """ Check a field for text """
-##     element = context.driver.find_element_by_id(field)
-##     assert message in element.text
+# @then('I should see "{message}" in "{field}"')
+# def step_impl(context, message, field):
+    """ Check a field for text """
+#     element = context.driver.find_element_by_id(field)
+# assert message in element.text

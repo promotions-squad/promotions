@@ -76,7 +76,7 @@ $(function () {
         var promotion_id = $("#promotion_id").val();
         var productid = $("#promotion_productid").val();
         var category = $("#promotion_category").val();
-        var available = $("#promotion_available").val();
+        var available = $("#promotion_available").val() == "true";
         var discount = $("#promotion_discount").val();
 
         var data = {
@@ -216,11 +216,11 @@ $(function () {
             $("#search_results").empty();
             $("#search_results").append('<table class="table-striped">');
             var header = '<tr>'
-            header += '<th style="width:10%">ID</th>'
-            header += '<th style="width:40%">ProductID</th>'
-            header += '<th style="width:40%">Category</th>'
-            header += '<th style="width:10%">Available</th></tr>'
-            header += '<th style="width:40%">Discount</th>'
+            header += '<th style="width:20%">ID</th>'
+            header += '<th style="width:20%">ProductID</th>'
+            header += '<th style="width:20%">Category</th>'
+            header += '<th style="width:20%">Available</th>'
+            header += '<th style="width:20%">Discount</th></tr>'
             $("#search_results").append(header);
             for(var i = 0; i < res.length; i++) {
                 var promotion = res[i];
