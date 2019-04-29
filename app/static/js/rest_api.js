@@ -76,11 +76,7 @@ $(function () {
         var promotion_id = $("#promotion_id").val();
         var productid = $("#promotion_productid").val();
         var category = $("#promotion_category").val();
-        if (res.available == true) {
-            $("#promotion_available").val("true");
-        } else {
-            $("#promotion_available").val("false");
-        }
+        var available = $("#promotion_available").val() == "true";
         var discount = $("#promotion_discount").val();
 
         var data = {
