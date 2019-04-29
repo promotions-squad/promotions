@@ -52,3 +52,11 @@
      And I press the "Search" button
      Then I should see "300" in the results
      Then I should not see "495" in the results
+     
+ Scenario: Read a Promotion
+     When I visit the "Home Page"
+     And I set the "Id" to "1"
+     And I press the "Retrieve" button
+     Then I should see "495" in the "productid" field
+     Then I should see "two" in the "category" field
+     Then I should see "2" in the "discount" field
