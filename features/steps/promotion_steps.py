@@ -6,6 +6,7 @@ Steps file for Promotion.feature
 from os import getenv
 import json
 import requests
+import logging
 from behave import *
 from compare import expect, ensure
 from selenium.webdriver.common.by import By
@@ -117,6 +118,21 @@ def step_impl(context, text_string, element_name):
          )
      )
      expect(found).to_be(True)
+
+@when('I copy the "{element_name}" field')
+def step_impl(context, element_name):
+    element_id = 'promotion_' + element_name.lower()
+    element = context.driver.find_element_by_id(element_id)
+    context.clipboard = element.get_attribute('value')
+    logging.info('Clipboard contains: %s', context.clipboard)
+
+@when('I paste the "{element_name}" field')
+def step_impl(context, element_name):
+    element_id = 'promotion_' + element_name.lower()
+    element = context.driver.find_element_by_id(element_id)
+    element.clear()
+    element.send_keys(context.clipboard)
+
 
 #@when('I change "{element_name}" to "{text_string}"')
 #def step_impl(context, element_name, text_string):
