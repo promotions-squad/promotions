@@ -52,17 +52,7 @@
      And I press the "Search" button
      Then I should see "300" in the results
      Then I should not see "495" in the results
-<<<<<<< HEAD
-<<<<<<< HEAD
-     
-=======
-     Then I should see "two" in the "category" field
-     Then I should see "2" in the "discount" field
 
->>>>>>> master
-=======
-
->>>>>>> 14fcc95895cd01340b2bfe93517ee611e2bf7712
  Scenario: Read a Promotion
      When I visit the "Home Page"
      And I set the "Id" to "1"
