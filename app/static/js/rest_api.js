@@ -105,6 +105,32 @@ $(function () {
     });
 
     // ****************************************
+    // Cancel a Promotion
+    // ****************************************
+
+    $("#cancel-btn").click(function () {
+
+        var promotion_id = $("#promotion_id").val();
+
+
+        var ajax = $.ajax({
+                type: "PUT",
+                url: "/promotions/" + promotion_id + "/cancel",
+                contentType:"application/json"
+            })
+
+        ajax.done(function(res){
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+
+    // ****************************************
     // Retrieve a Promotion
     // ****************************************
 

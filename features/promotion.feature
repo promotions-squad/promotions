@@ -53,6 +53,15 @@
      Then I should see "300" in the results
      Then I should not see "495" in the results
 
+Scenario: Cancel a Promotion
+     When I visit the "Home Page"
+     And I set the "Id" to "1"
+     And I press the "Cancel" button
+     Then I should see the message "Success"
+     When I set the "Id" to "1"
+     And I press the "Retrieve" button
+     Then I should see "false" in the "available" field
+
  Scenario: Read a Promotion
      When I visit the "Home Page"
      And I set the "Id" to "1"
