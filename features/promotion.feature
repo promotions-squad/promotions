@@ -54,7 +54,7 @@
      Then I should not see "495" in the results
      Then I should see "two" in the "category" field
      Then I should see "2" in the "discount" field
-     
+
  Scenario: Read a Promotion
      When I visit the "Home Page"
      And I set the "Id" to "1"
@@ -63,3 +63,12 @@
      Then I should see "two" in the "category" field
      Then I should see "2" in the "discount" field
 
+Scenario: Delete a Promotion
+      When I visit the "Home Page"
+      And I set the "Id" to "3"
+      And I press the "Delete" button
+      When I visit the "Home Page"
+      And I press the "Search" button
+      Then I should see "495" in the results
+      And I should see "398" in the results
+      And I should not see "492" in the results
