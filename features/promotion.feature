@@ -52,8 +52,6 @@
      And I press the "Search" button
      Then I should see "300" in the results
      Then I should not see "495" in the results
-     Then I should see "two" in the "category" field
-     Then I should see "2" in the "discount" field
      
  Scenario: Read a Promotion
      When I visit the "Home Page"
