@@ -6,7 +6,7 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#promotion_id").val(res.id);
+        $("#promotion_id").val(res._id);
         $("#promotion_productid").val(res.productid);
         $("#promotion_category").val(res.category);
         if (res.available == true) {
@@ -250,11 +250,20 @@ $(function () {
             $("#search_results").append(header);
             for(var i = 0; i < res.length; i++) {
                 var promotion = res[i];
-                var row = "<tr><td>"+promotion.id+"</td><td>"+promotion.productid+"</td><td>"+promotion.category+"</td><td>"+promotion.available+"</td><td>"+promotion.discount+"</td></tr>";
+                var row = "<tr><td>"+promotion._id+"</td><td>"+promotion.productid+"</td><td>"+promotion.category+"</td><td>"+promotion.available+"</td><td>"+promotion.discount+"</td></tr>";
                 $("#search_results").append(row);
+                if (i == 0) {
+                    firstPromotion = promotion;
+                }
+
             }
 
             $("#search_results").append('</table>');
+
+            // copy the first result to the form
+            if (firstPromotion != "") {
+                update_form_data(firstPromotion)
+            }
 
             flash_message("Success")
         });

@@ -4,15 +4,17 @@ Promotion Steps
 Steps file for Promotion.feature
 """
 from os import getenv
+import logging
 import json
 import requests
 from behave import *
 from compare import expect, ensure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions
 
-WAIT_SECONDS = int(getenv('WAIT_SECONDS', '30'))
+WAIT_SECONDS = int(getenv('WAIT_SECONDS', '1'))
 
 @given('the following promotions')
 def step_impl(context):
@@ -54,6 +56,47 @@ def step_impl(context, element_name, text_string):
     element = context.driver.find_element_by_id(element_id)
     element.clear()
     element.send_keys(text_string)
+
+@when('I select "{text}" in the "{element_name}" dropdown')
+def step_impl(context, text, element_name):
+    element_id = 'promotion_' + element_name.lower()
+    element = Select(context.driver.find_element_by_id(element_id))
+    element.select_by_visible_text(text)
+
+@then('I should see "{text}" in the "{element_name}" dropdown')
+def step_impl(context, text, element_name):
+    element_id = 'promotion_' + element_name.lower()
+    element = Select(context.driver.find_element_by_id(element_id))
+    expect(element.first_selected_option.text).to_equal(text)
+
+@then('the "{element_name}" field should be empty')
+def step_impl(context, element_name):
+    element_id = 'promotion_' + element_name.lower()
+    element = context.driver.find_element_by_id(element_id)
+    expect(element.get_attribute('value')).to_be(u'')
+
+##################################################################
+# These two function simulate copy and paste
+##################################################################
+@when('I copy the "{element_name}" field')
+def step_impl(context, element_name):
+    element_id = 'promotion_' + element_name.lower()
+    # element = context.driver.find_element_by_id(element_id)
+    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    context.clipboard = element.get_attribute('value')
+    logging.info('Clipboard contains: %s', context.clipboard)
+
+@when('I paste the "{element_name}" field')
+def step_impl(context, element_name):
+    element_id = 'promotion_' + element_name.lower()
+    # element = context.driver.find_element_by_id(element_id)
+    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    element.clear()
+    element.send_keys(context.clipboard)
 
 ##################################################################
 # This code works because of the following naming convention:
@@ -101,8 +144,8 @@ def step_impl(context, message):
 ##################################################################
 # This code works because of the following naming convention:
 # The id field for text input in the html is the element name
-# prefixed by 'pet_' so the Name field has an id='pet_name'
-# We can then lowercase the name and prefix with pet_ to get the id
+# prefixed by 'promotion_' so the Name field has an id='promotion_name'
+# We can then lowercase the name and prefix with promotion_ to get the id
 ##################################################################
 
 @then('I should see "{text_string}" in the "{element_name}" field')

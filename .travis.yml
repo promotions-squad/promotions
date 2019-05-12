@@ -2,6 +2,9 @@ language: python
 python:
   - "2.7"
 
+services:
+  - docker
+
 before_install:
   - docker pull couchdb:latest
   - docker run -d --name couchdb -p 5984:5984 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass
@@ -12,13 +15,19 @@ before_install:
 install: "pip install -r requirements.txt"
 
 # commands to run tests
-before_script: redis-cli ping
+before_script:
+  - curl -X GET http://localhost:5984/
+  - curl -X PUT http://admin:pass@localhost:5984/test
+  - python run.py &  # start a Web server in the background
+  - sleep 3 # give Web server some time to bind to sockets, etc
+  #redis-cli ping
 
 script:
   - nosetests
+  - behave
 
 after_success:
   - codecov
 
-services:
-  - redis-server
+#services:
+#  - redis-server

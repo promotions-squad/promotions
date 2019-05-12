@@ -5,10 +5,10 @@
 
  Background:
     Given the following promotions
-         | id | productid  | category | available | discount |
-         |  1 | 495        | two      | true      |    2     |
-         |  2 | 398        | three    | true      |    3     |
-         |  3 | 492        | four     | true      |    4     |
+         | productid  | category | available | discount |
+         | 495        | two      | true      |    2     |
+         | 398        | three    | true      |    3     |
+         | 492        | four     | true      |    4     |
 
  Scenario: The server is running
      When I visit the "Home Page"
@@ -19,6 +19,7 @@
      When I visit the "Home Page"
      And I set the "productid" to "496"
      And I set the "category" to "three"
+     And I set the "discount" to "5"
      And I press the "Create" button
      Then I should see the message "Success"
 
@@ -39,13 +40,16 @@
 
  Scenario: Update a Promotion
      When I visit the "Home Page"
-     And I set the "Id" to "1"
-     And I press the "Retrieve" button
+     And I set the "productid" to "495"
+     And I press the "Search" button
      Then I should see "495" in the "productid" field
+     And I should see "two" in the "Category" field
      When I change "productid" to "300"
      And I press the "Update" button
      Then I should see the message "Success"
-     When I set the "Id" to "1"
+     When I copy the "Id" field
+     And I press the "Clear" button
+     And I paste the "Id" field
      And I press the "Retrieve" button
      Then I should see "300" in the "productid" field
      When I press the "Clear" button
@@ -55,16 +59,28 @@
 
 Scenario: Cancel a Promotion
      When I visit the "Home Page"
-     And I set the "Id" to "1"
+     And I set the "productid" to "398"
+     And I press the "Search" button
+     Then I should see "398" in the "productid" field
+     And I should see "three" in the "Category" field
+     When I copy the "Id" field
+     And I press the "Clear" button
+     And I paste the "Id" field
      And I press the "Cancel" button
      Then I should see the message "Success"
-     When I set the "Id" to "1"
+     When I copy the "Id" field
+     And I press the "Clear" button
+     And I paste the "Id" field
      And I press the "Retrieve" button
      Then I should see "false" in the "available" field
 
- Scenario: Read a Promotion
+ Scenario: Retrieve a Promotion
      When I visit the "Home Page"
-     And I set the "Id" to "1"
+     And I set the "productid" to "495"
+     And I press the "Search" button
+     And I copy the "Id" field
+     And I press the "Clear" button
+     And I paste the "Id" field
      And I press the "Retrieve" button
      Then I should see "495" in the "productid" field
      Then I should see "two" in the "category" field
@@ -72,7 +88,13 @@ Scenario: Cancel a Promotion
 
 Scenario: Delete a Promotion
       When I visit the "Home Page"
-      And I set the "Id" to "3"
+      And I set the "productid" to "492"
+      And I press the "Search" button
+      Then I should see "492" in the "productid" field
+      And I should see "four" in the "Category" field
+      When I copy the "Id" field
+      And I press the "Clear" button
+      And I paste the "Id" field
       And I press the "Delete" button
       When I visit the "Home Page"
       And I press the "Search" button
