@@ -270,14 +270,14 @@ class Promotion(object):
         opts = {}
         vcap_services = {}
         # Try and get VCAP from the environment or a file if developing
-        if 'VCAP_SERVICES' in os.environ:
-            Promotion.logger.info('Running in Bluemix mode.')
-            vcap_services = json.loads(os.environ['VCAP_SERVICES'])
-        # if VCAP_SERVICES isn't found, maybe we are running on Kubernetes?
-        elif 'BINDING_CLOUDANT' in os.environ:
+        if 'BINDING_CLOUDANT' in os.environ:
             Promotion.logger.info('Found Kubernetes Bindings')
             creds = json.loads(os.environ['BINDING_CLOUDANT'])
             vcap_services = {"cloudantNoSQLDB": [{"credentials": creds}]}
+        elif 'VCAP_SERVICES' in os.environ:
+            Promotion.logger.info('Running in Bluemix mode.')
+            vcap_services = json.loads(os.environ['VCAP_SERVICES'])
+        
         else:
             Promotion.logger.info('VCAP_SERVICES and BINDING_CLOUDANT undefined.')
             creds = {
