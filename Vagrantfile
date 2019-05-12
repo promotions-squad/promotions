@@ -9,7 +9,8 @@ Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/xenial64"
 
   # Forward Flasks ports
-  #config.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port", guest: 5984, host: 5984, host_ip: "127.0.0.1"
   config.vm.network "forwarded_port", guest: 5000, host: 5000, host_ip: "127.0.0.1"
   config.vm.network "private_network", ip: "192.168.33.10"
 
@@ -80,7 +81,7 @@ Vagrant.configure(2) do |config|
   SHELL
 
   ######################################################################
-  # Add CouchDB docker container (not used for BDD)
+  # Add CouchDB docker container
   ######################################################################
 #  config.vm.provision "shell", inline: <<-SHELL
 #    sudo mkdir -p /opt/couchdb/data
@@ -89,14 +90,14 @@ Vagrant.configure(2) do |config|
 
   # Add CouchDB docker container
   # docker run -d --name couchdb -p 5984:5984 -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass couchdb
-#  config.vm.provision "docker" do |d|
-#    d.pull_images "couchdb"
-#    d.run "couchdb",
-#      args: "--restart=always -d --name couchdb -p 5984:5984 -v /opt/couchdb/data:/opt/couchdb/data -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass"
-#  end
+  config.vm.provision "docker" do |d|
+    d.pull_images "couchdb"
+    d.run "couchdb",
+      args: "--restart=always -d --name couchdb -p 5984:5984 -v /opt/couchdb/data:/opt/couchdb/data -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=pass"
+  end
 
 ######################################################################
-  # Setup a Bluemix and Kubernetes environment
+  # Setup a IBM Cloud CLI environment after Docker
   ######################################################################
   config.vm.provision "shell", inline: <<-SHELL
     echo "\n************************************"
@@ -113,15 +114,21 @@ Vagrant.configure(2) do |config|
     echo "\n"
     echo "ibmcloud login -a https://api.ng.bluemix.net --apikey @~/.bluemix/apiKey.json"
     echo "\n"
+
+    # Show the GUI URL for Couch DB
+    echo "\n"
+    echo "CouchDB Admin GUI can be found at:\n"
+    echo "http://127.0.0.1:5984/_utils"
+
   SHELL
 
   ######################################################################
-  # Add Redis docker container
+  # Add Redis docker container (not used for cloud version)
   ######################################################################
-  config.vm.provision "docker" do |d|
-    d.pull_images "redis:alpine"
-    d.run "redis:alpine",
-      args: "--restart=always -d --name redis -h redis -p 6379:6379 -v redis_data:/data"
-  end
+#  config.vm.provision "docker" do |d|
+#    d.pull_images "redis:alpine"
+#    d.run "redis:alpine",
+#      args: "--restart=always -d --name redis -h redis -p 6379:6379 -v redis_data:/data"
+#  end
 
 end

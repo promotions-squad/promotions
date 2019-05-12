@@ -15,7 +15,7 @@
 ######################################################################
 
 """
-Promotion Store Service with UI
+Promotion Service with UI
 
 Paths:
 ------
@@ -66,11 +66,18 @@ def list_promotions():
     promotions = []
     category = request.args.get('category')
     productid = request.args.get('productid')
+    discount = request.args.get('discount')
     if category:
+        app.logger.info('Find by category')
         promotions = Promotion.find_by_category(category)
     elif productid:
+        app.logger.info('Find by productid')
         promotions = Promotion.find_by_productid(productid)
+    elif discount:
+        app.logger.info('Find by discount')
+        promotions = Promotion.find_by_productid(discount)
     else:
+        app.logger.info('Find all')
         promotions = Promotion.all()
 
     results = [promotion.serialize() for promotion in promotions]
