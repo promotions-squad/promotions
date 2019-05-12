@@ -15,8 +15,8 @@ applications:
   buildpacks:
   - python_buildpack
   command: gunicorn --bind=0.0.0.0:$PORT --log-level=info app:app
-  services:
-  - Cloudant
+  #services:
+  #- Cloudant
   env:
     FLASK_APP : app:app
     FLASK_DEBUG : false

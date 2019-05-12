@@ -55,7 +55,7 @@ class TestPromotions(unittest.TestCase):
     """ Test Cases for Promotion Model """
 
     def setUp(self):
-        """ Initialize the Redis database """
+        """ Initialize the Cloudant database """
         Promotion.init_db("test_promotion")
         Promotion.remove_all()
 
