@@ -8,10 +8,10 @@ from selenium import webdriver
 WAIT_SECONDS = 120
 
 # The line below is for local testing
-#BASE_URL = os.getenv('BASE_URL', 'http://localhost:5000')
+BASE_URL = os.getenv('BASE_URL', 'http://localhost:5000')
 
 # The line below is for testing our app in the cloud
-BASE_URL = os.getenv('BASE_URL', 'http://nyu-promotion-service-s19-dev.bluemix.net')
+#BASE_URL = os.getenv('BASE_URL', 'https://nyu-promotion-service-s19-dev.bluemix.net')
 
 def before_all(context):
     """ Executed once before all tests """

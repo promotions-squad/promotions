@@ -9,7 +9,7 @@ applications:
   #host: nyu-promotion-service-s19
   #domain: mybluemix.net
   #routes:
-  #- route: nyu-promotion-service-s19.mybluemix.net
+  #- route: nyu-promotion-service-s19-dev.mybluemix.net
   path: .
   disk_quota: 1024M
   buildpacks:
