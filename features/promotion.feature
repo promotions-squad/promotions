@@ -55,7 +55,7 @@
      When I press the "Clear" button
      And I press the "Search" button
      Then I should see "300" in the results
-     Then I should not see "495" in the results
+     And I should not see "495" in the results
 
 Scenario: Cancel a Promotion
      When I visit the "Home Page"
@@ -83,8 +83,8 @@ Scenario: Cancel a Promotion
      And I paste the "Id" field
      And I press the "Retrieve" button
      Then I should see "495" in the "productid" field
-     Then I should see "two" in the "category" field
-     Then I should see "2" in the "discount" field
+     And I should see "two" in the "category" field
+     And I should see "2" in the "discount" field
 
 Scenario: Delete a Promotion
       When I visit the "Home Page"
