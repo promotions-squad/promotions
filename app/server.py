@@ -15,7 +15,7 @@
 ######################################################################
 
 """
-Promotion Store Service with UI
+Promotion Service with UI
 
 Paths:
 ------
@@ -66,13 +66,21 @@ def list_promotions():
     promotions = []
     category = request.args.get('category')
     productid = request.args.get('productid')
+    discount = request.args.get('discount')
     if category:
+        app.logger.info('Find by category')
         promotions = Promotion.find_by_category(category)
     elif productid:
+        app.logger.info('Find by productid')
         promotions = Promotion.find_by_productid(productid)
+    elif discount:
+        app.logger.info('Find by discount')
+        promotions = Promotion.find_by_discount(discount)
     else:
+        app.logger.info('Find all')
         promotions = Promotion.all()
 
+    app.logger.info('[%s] Promotions returned', len(promotions))
     results = [promotion.serialize() for promotion in promotions]
     return make_response(jsonify(results), status.HTTP_200_OK)
 
@@ -80,13 +88,14 @@ def list_promotions():
 ######################################################################
 # RETRIEVE A PROMOTION
 ######################################################################
-@app.route('/promotions/<int:promotion_id>', methods=['GET'])
+@app.route('/promotions/<promotion_id>', methods=['GET'])
 def get_promotions(promotion_id):
     """
     Retrieve a single Promotion
 
     This endpoint will return a Promotion based on it's id
     """
+    app.logger.info("Request to Retrieve a promotion with id [%s]", promotion_id)
     promotion = Promotion.find(promotion_id)
     if not promotion:
         raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
@@ -101,6 +110,7 @@ def create_promotions():
     Creates a Promotion
     This endpoint will create a Promotion based the data in the body that is posted
     """
+    app.logger.info('Request to Create a Promotion...')
     data = {}
     # Check for form submission data
     if request.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
@@ -112,12 +122,14 @@ def create_promotions():
             'discount': request.form['discount']
         }
     else:
+        check_content_type('application/json')
         app.logger.info('Getting data from API call')
         data = request.get_json()
     app.logger.info(data)
     promotion = Promotion()
     promotion.deserialize(data)
     promotion.save()
+    app.logger.info('Promotion with new id [%s] saved!', promotion.id)
     message = promotion.serialize()
     location_url = url_for('get_promotions', promotion_id=promotion.id, _external=True)
     return make_response(jsonify(message), status.HTTP_201_CREATED,
@@ -127,13 +139,14 @@ def create_promotions():
 ######################################################################
 # UPDATE AN EXISTING PROMOTION
 ######################################################################
-@app.route('/promotions/<int:promotion_id>', methods=['PUT'])
+@app.route('/promotions/<promotion_id>', methods=['PUT'])
 def update_promotions(promotion_id):
     """
     Update a Promotion
 
     This endpoint will update a Promotion based the body that is posted
     """
+    app.logger.info('Request to Update a promotion with id [%s]', promotion_id)
     check_content_type('application/json')
     promotion = Promotion.find(promotion_id)
     if not promotion:
@@ -148,13 +161,14 @@ def update_promotions(promotion_id):
 ######################################################################
 # DELETE A PROMOTION
 ######################################################################
-@app.route('/promotions/<int:promotion_id>', methods=['DELETE'])
+@app.route('/promotions/<promotion_id>', methods=['DELETE'])
 def delete_promotions(promotion_id):
     """
     Delete a Promotion
 
     This endpoint will delete a Promotion based the id specified in the path
     """
+    app.logger.info('Request to Delete a promotion with id [%s]', promotion_id)
     promotion = Promotion.find(promotion_id)
     if promotion:
         promotion.delete()
@@ -163,7 +177,7 @@ def delete_promotions(promotion_id):
 ######################################################################
 # CANCEL A PROMOTION
 ######################################################################
-@app.route('/promotions/<int:promotion_id>/cancel', methods=['PUT'])
+@app.route('/promotions/<promotion_id>/cancel', methods=['PUT'])
 def cancel_promotions(promotion_id):
     """ Purchasing a Promotion makes it unavailable """
     promotion = Promotion.find(promotion_id)
@@ -187,14 +201,15 @@ def promotions_reset():
 ######################################################################
 
 @app.before_first_request
-def init_db(redis=None):
+#def init_db(redis=None):
+def init_db(dbname="promotions"):
     """ Initlaize the model """
-    Promotion.init_db(redis)
+    Promotion.init_db(dbname)
 
 # load sample data
 def data_load(payload):
     """ Loads a Promotion into the database """
-    promotion = Promotion(0, payload['productid'], payload['category'],payload['available'],payload['discount'])
+    promotion = Promotion(payload['productid'], payload['category'],payload['available'],payload['discount'])
     promotion.save()
 
 def data_reset():
@@ -203,8 +218,13 @@ def data_reset():
 
 def check_content_type(content_type):
     """ Checks that the media type is correct """
+    if 'Content-Type' not in request.headers:
+        app.logger.error('No Content-Type specified.')
+        abort(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, 'Content-Type must be {}'.format(content_type))
+
     if request.headers['Content-Type'] == content_type:
         return
+
     app.logger.error('Invalid Content-Type: %s', request.headers['Content-Type'])
     abort(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, 'Content-Type must be {}'.format(content_type))
 

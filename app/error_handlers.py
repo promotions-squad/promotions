@@ -5,8 +5,8 @@ Handles all of the HTTP Error Codes as JSON
 """
 
 from flask import jsonify, make_response
-from app.server import app
-from app.custom_exceptions import DataValidationError
+from . import app
+from app.models import DataValidationError
 
 ######################################################################
 # Error Handlers
@@ -37,16 +37,16 @@ def method_not_supported(error):
     app.logger.info(message)
     return make_response(jsonify(status=405, error='Method not Allowed', message=message), 405)
 
-#@app.errorhandler(415)
-#def mediatype_not_supported(error):
-#    """ Handles unsuppoted media requests with 415_UNSUPPORTED_MEDIA_TYPE """
-#    message = error.message or str(error)
-#    app.logger.info(message)
-#    return make_response(jsonify(status=415, error='Unsupported media type', message=message), 415)
+@app.errorhandler(415)
+def mediatype_not_supported(error):
+    """ Handles unsuppoted media requests with 415_UNSUPPORTED_MEDIA_TYPE """
+    message = error.message or str(error)
+    app.logger.info(message)
+    return make_response(jsonify(status=415, error='Unsupported media type', message=message), 415)
 
-#@app.errorhandler(500)
-#def internal_server_error(error):
-#    """ Handles unexpected server error with 500_SERVER_ERROR """
-#    message = error.message or str(error)
-#    app.logger.info(message)
-#    return make_response(jsonify(status=500, error='Internal Server Error', message=message), 500)
+@app.errorhandler(500)
+def internal_server_error(error):
+    """ Handles unexpected server error with 500_SERVER_ERROR """
+    message = error.message or str(error)
+    app.logger.info(message)
+    return make_response(jsonify(status=500, error='Internal Server Error', message=message), 500)

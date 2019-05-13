@@ -23,7 +23,7 @@
         </div>
 
         <div class="col-md-12" id="form_data">
-          Create, Retrieve, Update, and Delete a Promotion:
+          Create, Retrieve, Update, Delete and Cancel a Promotion:
           <div class="well">
             <div class="form-horizontal">
               <div class="form-group">
@@ -34,6 +34,7 @@
                 <div class="col-sm-4">
                   <button type="submit" class="btn btn-primary" id="retrieve-btn">Retrieve</button>
                   <button type="submit" class="btn btn-danger" id="delete-btn">Delete</button>
+                  <button type="submit" class="btn btn-warning" id="cancel-btn">Cancel</button>
                 </div>
               </div>
             </div> <!-- form div -->
@@ -73,7 +74,6 @@
                   <button type="submit" class="btn btn-primary" id="clear-btn">Clear</button>
                   <button type="submit" class="btn btn-success" id="create-btn">Create</button>
                   <button type="submit" class="btn btn-warning" id="update-btn">Update</button>
-                  <button type="submit" class="btn btn-warning" id="cancel-btn">Cancel</button>
                 </div>
               </div>
           </div> <!-- form div -->
@@ -84,7 +84,7 @@
           <table class="table-striped">
             <thead>
             <tr>
-                <th class="col-md-1">ID</th>
+                <th class="col-md-4">ID</th>
                 <th class="col-md-4">ProductID</th>
                 <th class="col-md-4">Category</th>
                 <th class="col-md-3">Available</th>
