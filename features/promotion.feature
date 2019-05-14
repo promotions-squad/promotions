@@ -83,7 +83,7 @@ Scenario: Cancel a Promotion
      And I paste the "Id" field
      And I press the "Retrieve" button
      Then I should see "495" in the "productid" field
-     And I should see "two" in the "category" field
+     And I should see "two" in the "Category" field
      And I should see "2" in the "discount" field
 
 Scenario: Delete a Promotion
